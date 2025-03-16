@@ -1,0 +1,33 @@
+import random
+# !pip install pytesseract
+import pytesseract
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
+pytesseract.pytesseract.tesseract_cmd = r'/bin/tesseract'
+
+image = cv.imread('image_part8a.png',  cv.IMREAD_GRAYSCALE)
+ret, thresh = cv.threshold(image, 150, 255, cv.THRESH_BINARY)
+
+imageX  = cv.imread('image_part8a.png')
+image_rgb = cv.cvtColor(imageX, cv.COLOR_BGR2RGB)
+
+ret, image = cv.threshold(image, 230, 255, cv.THRESH_BINARY_INV)
+
+boundingBox = image.shape[0]//4, image.shape[1]//4
+
+position = (1,1)
+for i in range(1,5):
+  for j in range(1,5):
+    if (i,j) == position:
+      print(i,j)
+      img = image_rgb[180*(i-1) : 180*(i-1) + 180 , 319*(j-1) :  319*(j-1) + 319]
+      # plt.imshow(img)
+
+      # plt.show()
+      ocr_result = pytesseract.image_to_string(img)
+      print(ocr_result)
+    else:
+      continue

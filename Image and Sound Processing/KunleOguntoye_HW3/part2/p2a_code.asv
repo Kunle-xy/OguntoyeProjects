@@ -1,0 +1,97 @@
+clc;close all;clear;
+image = imread('p2_image3.png');
+image_gray = rgb2gray(image);
+
+% Apply a binary threshold
+thresh = imbinarize(image_gray, 230/255);
+
+% Read the original image for drawing
+image_rgb = imread('p2_image3.png');
+
+% Calculate the bounding box size (assuming image is evenly divisible by 4)
+boundingBox = [size(image_gray, 1)/4, size(image_gray, 2)/4];
+
+% Initialize text to put
+text_to_put = "";
+
+% Loop through each grid segment
+for i = 1:4
+    for j = 1:4
+        % Extract the segment of the image
+        img = ~thresh((boundingBox(1)*(i-1) + 1):(boundingBox(1)*i), ...
+                         (boundingBox(2)*(j-1) + 1):(boundingBox(2)*j));
+
+        % Check if the sum of pixel values in the grid cell exceeds 1e6
+
+        if sum(img(:)) > 1e4
+            fprintf("Detected text at" + '(%d,%d) \n', i, j);
+            text_to_put =  sprintf('(%d,%d) ', i, j);
+
+            % Specify the position for the text (bottom-left corner)
+            text_org = [boundingBox(2)*(j-1) + 1, boundingBox(1)*(i-1) + 1];
+
+            % Insert text into the image
+            image_rgb = insertText(image_rgb, text_org, text_to_put, 'FontSize', 20, 'TextColor', 'red', 'BoxOpacity', 0);
+        end
+    end
+end
+
+% Display the result
+
+% Optionally, save the image with text
+imwrite(image_rgb, 'p2_imagetest_with_text.png');
+
+
+% Import necessary packages
+ocrResults = []; % Placeholder for OCR results, assuming you want to store them
+
+% Read the image and convert it to grayscale
+image = imread('p2_image1.png');
+imageGray = rgb2gray(image);
+
+% Apply binary thresholding
+thresh = imbinarize(imageGray, 150/255);
+
+% Read the original image in RGB
+imageRGB = imread('p2_image1.png');
+
+% Apply inverse binary thresholding
+imageInv = imbinarize(imageGray, 230/255);
+imageInv = imcomplement(imageInv);
+
+% Determine bounding box size based on image dimensions
+[rows, cols, ~] = size(imageRGB);
+boundingBoxRow = rows / 4;
+boundingBoxCol = cols / 4;
+
+% Initialize a matrix to store results
+result = cell(4,4);
+
+% Loop through each segment of the image
+for i = 1:4
+    for j = 1:4
+        % Extract the current block of the image
+        block = imageInv((boundingBoxRow*(i-1) + 1):(boundingBoxRow*i), ...
+                         (boundingBoxCol*(j-1) + 1):(boundingBoxCol*j));
+        
+        % Check if the current block contains significant white pixels
+        if sum(block(:)) > 1e4
+            % Perform OCR on the block
+            text = ocr(block);
+            ocrResults = [ocrResults; text];
+            fprintf("Detected text at" + '(%d,%d) \n', i, j);% Store OCR results if needed
+            textToPut = sprintf(' (%d,%d)', i, j);
+            
+            % Specify the position to put text (bottom-left corner)
+            textPos = [(boundingBoxCol*(j-1) + 1), (boundingBoxRow*i - 30)];
+            
+            % Insert text into the RGB image
+            imageRGB = insertText(imageRGB, textPos, textToPut, 'FontSize', 18, 'BoxColor', ...
+                'red', 'BoxOpacity', 0, 'TextColor', 'red');
+        end
+    end
+end
+
+% Display the resulting image
+imshow(imageRGB);
+

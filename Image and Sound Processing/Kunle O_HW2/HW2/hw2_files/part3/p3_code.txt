@@ -1,0 +1,21 @@
+// Insert your code in part3/p3_code.m  or  part3/p3_code.cpp
+// Edit the file extension in the HTML template to match your programming language.
+
+image = cv.imread('image_part3a.png', cv.IMREAD_GRAYSCALE)
+
+kernel_erode = cv.getStructuringElement(cv.MORPH_RECT,(50, 50))
+ret, exp = cv.threshold(image, 100, 255, cv.THRESH_BINARY_INV)
+
+img2 = (image == 255).astype(np.uint8)
+
+close = cv.morphologyEx(img2, cv.MORPH_CLOSE, kernel_erode)
+close[close ==1] = 255
+
+res = exp + close
+res[res==254] = 255
+
+result = cv.cvtColor(res, cv.COLOR_GRAY2RGB)
+result[res==0] = [231, 239, 239]
+result[res==255] = [0,0,0]
+
+plt.imshow(result)

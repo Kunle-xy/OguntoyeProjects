@@ -1,0 +1,20 @@
+// Insert your code in part4/p4_code.m  or  part4/p4_code.cpp
+// Edit the file extension in the HTML template to match your programming language.
+
+image = cv.imread('image_part4a.png',  cv.IMREAD_GRAYSCALE)
+imageX  = cv.imread('image_part4a.png')
+image_rgb = cv.cvtColor(imageX, cv.COLOR_BGR2RGB)
+
+kernel = cv.imread('A.PNG', cv.IMREAD_GRAYSCALE)
+
+ret, kernel = cv.threshold(kernel, 100, 255, cv.THRESH_BINARY_INV)
+# kernel = kernel[5:35, 3:27]
+ret, image = cv.threshold(image, 230, 255, cv.THRESH_BINARY_INV)
+
+erosion = cv.erode(image , kernel) 
+new_se = cv.flip(kernel,0)
+dilation = cv.dilate(erosion, new_se) 
+
+image_rgb[dilation==255]= [255,0,0]
+
+plt.imshow(image_rgb, cmap='gray')

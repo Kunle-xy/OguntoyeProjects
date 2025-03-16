@@ -1,0 +1,62 @@
+import random
+image = cv.imread('image_part6a.png',  cv.IMREAD_GRAYSCALE)
+ret, thresh = cv.threshold(image, 150, 255, cv.THRESH_BINARY)
+rgb_image = cv.cvtColor(thresh, cv.COLOR_GRAY2RGB)
+imageX  = cv.imread('image_part6a.png')
+image_rgb = cv.cvtColor(imageX, cv.COLOR_BGR2RGB)
+
+# kernel = kernel[5:35, 3:27]
+ret, image = cv.threshold(image, 230, 255, cv.THRESH_BINARY_INV)
+
+text = ['I','A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M',\
+        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+
+font = np.random.choice(Fonts)
+font_scale = 1
+font_color = (255, 255, 255)  # White color
+thickness = 5
+
+for ix, lett in enumerate(text):
+  a = random.randint(0, 255)
+  b = random.randint(0, 255)
+  c = random.randint(0, 255)
+  item = cv.imread(lett + '.PNG', cv.IMREAD_GRAYSCALE)
+  if item is None:
+    continue
+
+  font = np.random.choice(Fonts)
+  while font == 5:
+    font = np.random.choice(Fonts)
+
+  ret, kernel = cv.threshold(item, 100, 255, cv.THRESH_BINARY_INV)
+  if lett == 'I':
+    kernel = np.pad(kernel, [(0,), (15,)], mode='constant')[:, 38:48]
+    # continue
+  elif lett == 'O':
+    kernel = kernel[:, 2:29]
+  elif ix == 'U':
+    kernel = kernel[:, :27]
+  else:
+    pass
+
+  erosion = cv.erode(image , kernel)
+  if lett in ['E' ]:
+    new_se = cv.flip(kernel,1)
+  elif lett in ['F', 'D', 'K', 'L', 'R', 'G', 'P', 'S', 'C' ]:
+    new_se = cv.flip(kernel,-1)
+  elif lett in ['N']:
+    new_se = kernel
+  else: new_se = cv.flip(kernel,0)
+
+  dilation = cv.dilate(erosion, new_se)
+  plt.imshow(dilation, cmap='gray')
+
+
+  rgb_image[dilation==255]= [a, b, c]
+  # plt.imshow(dilation, cmap='gray')
+  # plt.show()
+
+
+plt.imshow(~rgb_image, cmap='gray')
+plt.axis('off')
+plt.savefig("image_part7a.jpg", bbox_inches='tight')

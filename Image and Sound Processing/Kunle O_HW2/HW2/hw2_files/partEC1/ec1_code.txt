@@ -1,0 +1,36 @@
+image = cv.imread('image_partEC1a.png')
+# ret, image = cv.threshold(image, 200, 255, cv.THRESH_BINARY)
+
+image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+red_channel, green_channel, blue_channel = cv.split(image)
+
+boundingBox = image.shape[0]//4
+
+lists = []
+
+purple_lower = np.array([100, 0, 100], dtype=np.uint8)
+purple_upper = np.array([255, 100, 255], dtype=np.uint8)
+
+kernel = cv.getStructuringElement(cv.MORPH_RECT,(1, 25))
+purple_mask = cv.inRange(image, purple_lower, purple_upper)
+
+xx = cv.dilate(purple_mask, kernel )
+
+for i in range(4):
+  hist = xx[boundingBox*i: boundingBox*i +boundingBox , :].sum()//2 \
+          + xx[boundingBox*i: boundingBox*i + boundingBox , :].sum()
+  lists.append([i,hist])
+
+taken = [lists[i][0] for i in range(4) if lists[i][1] != 0][0]
+
+# !sudo apt-get install tesseract-ocr
+import pytesseract
+
+try:
+  pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+
+  ocr_result = pytesseract.image_to_string(image[boundingBox*taken: boundingBox*taken +boundingBox , :])
+  print(ocr_result)
+
+except IndexError as e:
+    print("IndexError occurred:", e)

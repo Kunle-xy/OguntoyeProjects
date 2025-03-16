@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta name="generator" content="AsciiDoc 8.6.9">
+      <title>HCI/CprE/ComS 575: Homework #2</title>
+      <link rel="stylesheet" href="hw2_files/riak.css" type="text/css">
+   </head>
+   <body class="article">
+      <div id="header">
+         <h1>HCI/CprE/ComS 575: Homework #2</h1>
+         <!-- Student information -->
+         <span id="author">Kunle, Oguntoye</span><br>
+         <span id="email" class="monospaced">&lt;
+         <a href="mailto:oguntoye@iastate.edu">oguntoye@iastate.edu</a>&gt;</span><br>
+         <!--  -->
+      </div>
+      <div id="content">
+         <div id="preamble">
+            <div class="sectionbody">
+               <div class="paragraph">
+                  <p>Supplementary files for this homework are posted on
+                     <a href="http://www.ece.iastate.edu/~alexs/classes/2024_Spring_575">the class web page</a>.
+                  </p>
+               </div>
+            </div>
+         </div>
+
+<!-- ---------------------------------- START PART 1 ---------------------------------- -->
+         <div class="sect1">
+            <h2 id="_part_1">Part 1</h2>
+            <div class="sectionbody">
+               <div class="paragraph">
+                  <p>Write a program that uses basic morphological operations to identify and mark all horizontal lines in the empty grid image.
+				  The result image should contain only the horizontal lines.
+				  Then, write another program to detect only the vertical lines.
+				  Edit the web template to display your result images and the computer code that was used to generate it for this and all subsequent parts. You must solve part1 using Matlab <strong>and</strong> OpenCV.
+                  </p>
+               </div>
+               <div class="sect2">
+                  <h3 id="_matlab">Matlab</h3>
+                  <table class="tableblock frame-all grid-all" style=" width:100%; ">
+                     <colgroup><col style="width:50%;">
+                     <col style="width:50%;">
+                     </colgroup><tbody>
+                        <tr>
+                           <td class="tableblock halign-left valign-top">
+                              <p class="tableblock"><span class="image">
+                                 <img src="hw2_files/part1/image_part1a.png" alt="hw2_files/placeholder.jpg" width="100%">
+                                 </span>
+                              </p>
+                           </td>
+                           <td class="tableblock halign-left valign-top">
+                              <p class="tableblock">
+                                 <span class="image">
+                                    <!-- Part 1 MATLAB Handle -->
+                                    <img src="hw2_files/part1/part1_a.jpg" alt="Handle" width="100%">
+                                    <img src="hw2_files/part1/part1_b.jpg" alt="Handle" width="100%">
+                                    <!--  -->
+                                 </span>
+                              </p>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+                  <div class="listingblock">
+                     <div class="title">Source</div>
+                     <div class="content monospaced">
+                        <div class="codetext">
+                           <!-- Part 1 Matlab code -->
+                           <object class="codeobject" type="text/html" data="hw2_files/part1/p1_matlab_code.m"></object>
+                           <!--  -->
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="sect3">
+                  <h3 id="_opencv">OpenCV</h3>
+                  <table class="tableblock frame-all grid-all" style=" width:100%; ">
+                     <colgroup><col style="width:50%;">
+                     <col style="width:50%;">
+                     </colgroup><tbody>
+                        <tr>
+                           <td class="tableblock halign-left valign-top">
+                              <p class="tableblock"><span class="image">
+                                 <img src="hw2_files/part1/image_part1b.png" alt="hw2_files/part1/image_part1b.png" width="100%">
+                                 </span>
+                              </p>
+                           </td>
+                           <td class="tableblock halign-left valign-top">
+                              <p class="tableblock">
+                                 <span class="image">
+                                    <!-- Part 1 OpenCV Handle -->
+                                    <img src="hw2_files/part1/part1_a2.jpg" alt="Handle" width="100%">
+                                    <img src="hw2_files/part1/part1_b2.jpg"alt="Handle" width="100%">
+                                    <!--  -->
+                                 </span>
+                              </p>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+                  <div class="listingblock">
+                     <div class="title">Source</div>
+                     <div class="content monospaced">
+                        <!-- Part 1 OpenCV code -->
+                        <div class="codetext">
+                           <object class="codeobject" type="text/html" data="hw2_files/part1/p1_opencv_code.py"></object>
+                           </div>
+                        <!--  -->
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+<!-- ---------------------------------- END PART 1 ---------------------------------- -->
+
+<!-- ---------------------------------- START PART 2 ---------------------------------- -->
+         <div class="sect1">
+            <h2 id="_part_2">Part 2</h2>
+            <div class="sectionbody">
+               <div class="paragraph">
+                        <p>Find and mark the borders of all 16 blocks in the grid (draw red rectangles around them). Also, change the color of the selected blocks from gray to blue. Solve this and all subsequent problems using either MATLAB <strong>or</strong> OpenCV.
+                  </p>
+               </div>
+               <table class="tableblock frame-all grid-all" style=" width:100%; ">
+                  <colgroup><col style="width:50%;">
+                  <col style="width:50%;">
+                  <col style="width:50%;">
+                  </colgroup><tbody>
+                     <tr>
+                        <td class="tableblock halign-left valign-top">
+                              <p class="tableblock"><span class="image">
+                                 <img src="hw2_files/part2/image_part2a.png" alt="hw2_files/part2/image_part2a.png" width="100%">
+                                 </span>
+                              </p>
+                              <p class="tableblock"><span class="image">
+                                 <img src="hw2_files/part2/image_part2b.png" alt="hw2_files/part2/image_part2a.png" width="100%">
+                                 </span>
+                              </p>
+                        </td>
+                        <td class="tableblock halign-left valign-top">
+                           <p class="tableblock">
+                              <span class="image">
+                                 <!-- Part 3 image -->
+                                 <img src="hw2_files/part2/image_part2a.jpg"    alt="search_placeholder.jpg" width="100%">
+                                 <!--  -->
+                              </span>
+                              <span class="image">
+                                 <!-- Part 3 image -->
+                                 <img src="hw2_files/part2/image_part2b.jpg"    alt="search_placeholder.jpg" width="100%">
+                                 <!--  -->
+                              </span>
+                           </p>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+               <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- Part 2 code -->
+                     <div class="codetext">
+                        <object class="codeobject" type="text/html" data="hw2_files/part2/p2_code.txt"></object>                     </div>
+                     <!--  -->
+                  </div>
+               </div>
+            </div>
+         </div>
+<!-- ----------------------------------- END PART 2 ----------------------------------- -->
+
+
+<!-- ---------------------------------- START PART 3 ---------------------------------- -->
+         <div class="sect1">
+            <h2 id="_part_3">Part 3</h2>
+            <div class="sectionbody">
+               <div class="paragraph">
+                  <p>Write a program that uses basic morphological operations to identify and crop the 4x4 grid in the image shown below.
+				  The result image should contain only the pixels inside the grid (similar to the test images for the previous two problems).</p>
+               </div>
+               <table class="tableblock frame-all grid-all" style=" width:100%; ">
+                  <colgroup><col style="width:50%;">
+                  <col style="width:50%;">
+                  <col style="width:50%;">
+                  </colgroup><tbody>
+                     <tr>
+                        <td class="tableblock halign-left valign-top">
+                              <p class="tableblock"><span class="image">
+                                 <img src="hw2_files/part3/image_part3a.png" alt="hw2_files/part3/image_part3a.png" width="100%">
+                                 </span>
+                              </p>
+                              <p class="tableblock"><span class="image">
+                                 <img src="hw2_files/part3/image_part3b.png" alt="hw2_files/part3/image_part3a.png" width="100%">
+                                 </span>
+                              </p>
+                        </td>
+                        <td class="tableblock halign-left valign-top">
+                           <p class="tableblock">
+                              <span class="image">
+                                 <!-- Part 3 image -->
+                                 <img src="hw2_files/part3/image_part3a.jpg"    alt="search_placeholder.jpg" width="100%">
+                                 <!--  -->
+                              </span>
+                              <span class="image">
+                                 <!-- Part 3 image -->
+                                 <img src="hw2_files/part3/image_part3b.jpg"    alt="search_placeholder.jpg" width="100%">
+                                 <!--  -->
+                              </span>
+                           </p>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+               <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- Part 3 code -->
+                     <div class="codetext">
+                        <object class="codeobject" type="text/html" data="hw2_files/part3/p3_code.txt"></object>                     </div>
+                     <!--  -->
+                  </div>
+               </div>
+            </div>
+         </div>
+<!-- ----------------------------------- END PART 3 ----------------------------------- -->
+
+<!-- ---------------------------------- START PART 4 ---------------------------------- -->
+<div class="sect1">
+      <h2 id="_part_4">Part 4</h2>
+      <div class="sectionbody">
+         <div class="paragraph">
+            <p>Find all 'A' letters within the grid and color them red.</p>
+         </div>
+         <table class="tableblock frame-all grid-all" style=" width:100%; ">
+            <colgroup><col style="width:50%;">
+            <col style="width:50%;">
+            <col style="width:50%;">
+            </colgroup><tbody>
+               <tr>
+                  <td class="tableblock halign-left valign-top">
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part4/image_part4a.png" alt="hw2_files/part4/image_part4a.png" width="100%">
+                           </span>
+                        </p>
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part4/image_part4b.png" alt="hw2_files/part4/image_part4a.png" width="100%">
+                           </span>
+                        </p>
+                  </td>
+                  <td class="tableblock halign-left valign-top">
+                     <p class="tableblock">
+                        <span class="image">
+                           <!-- Part 4 image -->
+                           <img src="hw2_files/part4/image_part4a.jpg"    alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                        <span class="image">
+                           <!-- Part 4 image -->
+                           <img src="hw2_files/part4/image_part4b.jpg"    alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="listingblock">
+            <div class="title">Source</div>
+            <div class="content monospaced">
+               <!-- Part 4 code -->
+               <div class="codetext">
+                  <object class="codeobject" type="text/html" data="hw2_files/part4/p4_code.txt"></object>
+                </div>
+               <!--  -->
+            </div>
+         </div>
+      </div>
+   </div>
+<!-- ----------------------------------- END PART 4 ----------------------------------- -->
+
+<!-- ---------------------------------- START PART 5 ---------------------------------- -->
+
+<div class="sect1">
+      <h2 id="_part_5">Part 5</h2>
+      <div class="sectionbody">
+         <div class="paragraph">
+            <p>Find and color all vowels within the grid (A, E, I, O, U, Y). Color each vowel in a different color.</p>
+         </div>
+         <table class="tableblock frame-all grid-all" style=" width:100%; ">
+            <colgroup><col style="width:50%;">
+            <col style="width:50%;">
+            <col style="width:50%;">
+            </colgroup><tbody>
+               <tr>
+                  <td class="tableblock halign-left valign-top">
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part5/image_part5a.png" alt="hw2_files/part5/image_part5a.png" width="100%">
+                           </span>
+                        </p>
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part5/image_part5b.png" alt="hw2_files/part5/image_part5a.png" width="100%">
+                           </span>
+                        </p>
+                  </td>
+                  <td class="tableblock halign-left valign-top">
+                     <p class="tableblock">
+                        <span class="image">
+                           <!-- Part 5 image -->
+                           <img src="hw2_files/part5/image_part5a.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                        <span class="image">
+                           <!-- Part 5 image -->
+                           <img src="hw2_files/part5/image_part5b.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="listingblock">
+            <div class="title">Source</div>
+            <div class="content monospaced">
+               <!-- Part 5 code -->
+               <div class="codetext">
+                        <object class="codeobject" type="text/html" data="hw2_files/part5/p5_code.txt"></object>               </div>
+               <!--  -->
+            </div>
+         </div>
+      </div>
+   </div>
+<!-- ----------------------------------- END PART 5 ----------------------------------- -->
+
+<!-- ---------------------------------- START PART 6 ---------------------------------- -->
+<div class="sect1">
+      <h2 id="_part_6">Part 6</h2>
+      <div class="sectionbody">
+         <div class="paragraph">
+            <p>Find all vowels within the grid and replace each with the same letter but in a different font. </p>
+             <p> You will have to make your own templates for the new versions of the six vowels, or figure out some other way to print text to an image at the right pixel coordinates.
+			 Cutouts of all symbols used in this problem can be found in the 'letter_cutouts' folder.</p>
+         </div>
+         <table class="tableblock frame-all grid-all" style=" width:100%; ">
+            <colgroup><col style="width:50%;">
+            <col style="width:50%;">
+            <col style="width:50%;">
+            </colgroup><tbody>
+               <tr>
+                  <td class="tableblock halign-left valign-top">
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part6/image_part6a.png" alt="hw2_files/part6/image_part6a.png" width="100%">
+                           </span>
+                        </p>
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part6/image_part6b.png" alt="hw2_files/part6/image_part6a.png" width="100%">
+                           </span>
+                        </p>
+                  </td>
+                  <td class="tableblock halign-left valign-top">
+                     <p class="tableblock">
+                        <span class="image">
+                           <!-- Part 6 image -->
+                           <img src="hw2_files/part6/image_part6a.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                        <span class="image">
+                           <!-- Part 6 image -->
+                           <img src="hw2_files/part6/image_part6b.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="listingblock">
+            <div class="title">Source</div>
+            <div class="content monospaced">
+               <!-- Part 6 code -->
+               <div class="codetext">
+                        <object class="codeobject" type="text/html" data="hw2_files/part6/p6_code.txt"></object>               </div>
+               <!--  -->
+            </div>
+         </div>
+      </div>
+   </div>
+<!-- ----------------------------------- END PART 6 ----------------------------------- -->
+
+<!-- ---------------------------------- START PART 7 ---------------------------------- -->
+<div class="sect1">
+      <h2 id="_part_7">Part 7</h2>
+      <div class="sectionbody">
+         <div class="paragraph">
+            <p>Find all letters within the grid. Color each letter in a different random color.
+			Identical letters must have the same color. Cutouts of all 26 letters used in the word search puzzles can be found in the 'letter_cutouts' folder.</p>
+         </div>
+         <table class="tableblock frame-all grid-all" style=" width:100%; ">
+            <colgroup><col style="width:50%;">
+            <col style="width:50%;">
+            <col style="width:50%;">
+            </colgroup><tbody>
+               <tr>
+                  <td class="tableblock halign-left valign-top">
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part7/image_part7a.png" alt="hw2_files/part7/image_part7a.png" width="100%">
+                           </span>
+                        </p>
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part7/image_part7b.png" alt="hw2_files/part7/image_part7a.png" width="100%">
+                           </span>
+                        </p>
+                  </td>
+                  <td class="tableblock halign-left valign-top">
+                     <p class="tableblock">
+                        <span class="image">
+                           <!-- Part 7 image -->
+                           <img src="hw2_files/part7/image_part7a.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                        <span class="image">
+                           <!-- Part 7 image -->
+                           <img src="hw2_files/part7/image_part7b.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="listingblock">
+            <div class="title">Source</div>
+            <div class="content monospaced">
+               <!-- Part 7 code -->
+               <div class="codetext">
+                         <object class="codeobject" type="text/html" data="hw2_files/part7/p7_code.txt"></object>              </div>
+               <!--  -->
+            </div>
+         </div>
+      </div>
+   </div>
+<!-- ----------------------------------- END PART 7 ----------------------------------- -->
+
+<!-- ---------------------------------- START PART 8 ---------------------------------- -->
+<div class="sect1">
+      <h2 id="_part_8">Part 8</h2>
+      <div class="sectionbody">
+         <div class="paragraph">
+            <p>Write a program to detect the word in the upper-left corner. Then print it on the console in ASCII, e.g.,</br>
+			<br>POPPY</br>
+</p>
+         </div>
+         <table class="tableblock frame-all grid-all" style=" width:100%; ">
+            <colgroup><col style="width:50%;">
+            <col style="width:50%;">
+            <col style="width:50%;">
+            </colgroup><tbody>
+               <tr>
+                  <td class="tableblock halign-left valign-top">
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part8/image_part8a.png" alt="hw2_files/part8/image_part8a.png" width="100%">
+                           </span>
+                        </p>
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part8/image_part8b.png" alt="hw2_files/part8/image_part8a.png" width="100%">
+                           </span>
+                        </p>
+                  </td>
+                  <td class="tableblock halign-left valign-top">
+                     <p class="tableblock">
+                        <span class="image">
+                           <!-- Part 8 image -->
+                           <img src="hw2_files/part8/image_part8a.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                        <span class="image">
+                           <!-- Part 8 image -->
+                           <img src="hw2_files/part8/image_part8b.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="listingblock">
+            <div class="title">Source</div>
+            <div class="content monospaced">
+               <!-- Part 8 code -->
+               <div class="codetext">
+                        <object class="codeobject" type="text/html" data="hw2_files/part8/p8_code.txt"></object>               </div>
+               <!--  -->
+            </div>
+         </div>
+      </div>
+   </div>
+<!-- ----------------------------------- END PART 8 ----------------------------------- -->
+
+<!-- ---------------------------------- START PART 9 ---------------------------------- -->
+
+<div class="sect1">
+      <h2 id="_part_9">Part 9</h2>
+      <div class="sectionbody">
+         <div class="paragraph">
+            <p> This is the same as problem 8, but now print all the words in the entire matrix.
+</p>
+         </div>
+         <table class="tableblock frame-all grid-all" style=" width:100%; ">
+            <colgroup><col style="width:50%;">
+            <col style="width:50%;">
+            <col style="width:50%;">
+            </colgroup><tbody>
+               <tr>
+                  <td class="tableblock halign-left valign-top">
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part9/image_part9a.png" alt="hw2_files/part9/image_part9a.png" width="100%">
+                           </span>
+                        </p>
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part9/image_part9b.png" alt="hw2_files/part9/image_part9a.png" width="100%">
+                           </span>
+                        </p>
+                  </td>
+                  <td class="tableblock halign-left valign-top">
+                     <p class="tableblock">
+                        <span class="image">
+                           <!-- Part 9 image -->
+                           <img src="hw2_files/part9/image_part9a.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                        <span class="image">
+                           <!-- Part 9 image -->
+                           <img src="hw2_files/part9/image_part9b.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="listingblock">
+            <div class="title">Source</div>
+            <div class="content monospaced">
+               <!-- Part 9 code -->
+               <div class="codetext">
+                    <object class="codeobject" type="text/html" data="hw2_files/part9/p9_code.txt"></object>          </div>
+               <!--  -->
+            </div>
+         </div>
+      </div>
+   </div>
+<!-- ----------------------------------- END PART 9 ----------------------------------- -->
+
+<!-- ---------------------------------- START PART 10 ---------------------------------- -->
+<div class="sect1">
+      <h2 id="_part_10">Part 10</h2>
+      <div class="sectionbody">
+         <div class="paragraph">
+            <p> Print only the selected words (highlighted in gray) in ASCII. </p>
+         </div>
+         <table class="tableblock frame-all grid-all" style=" width:100%; ">
+            <colgroup><col style="width:50%;">
+            <col style="width:50%;">
+            <col style="width:50%;">
+            </colgroup><tbody>
+               <tr>
+                  <td class="tableblock halign-left valign-top">
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part10/image_part10a.png" alt="hw2_files/part10/wordle_1_125.png" width="100%">
+                           </span>
+                        </p>
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/part10/image_part10b.png" alt="hw2_files/part10/wordle_1_125.png" width="100%">
+                           </span>
+                        </p>
+                  </td>
+                  <td class="tableblock halign-left valign-top">
+                     <p class="tableblock">
+                        <span class="image">
+                           <!-- Part 10 image -->
+                           <img src="hw2_files/part10/image_part10a.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                        <span class="image">
+                           <!-- Part 10 image -->
+                           <img src="hw2_files/part10/image_part10b.jpg" alt="placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="listingblock">
+            <div class="title">Source</div>
+            <div class="content monospaced">
+               <!-- Part 10 code -->
+               <div class="codetext">
+                        <object class="codeobject" type="text/html" data="hw2_files/part10/p10_code.txt"></object>               </div>
+               <!--  -->
+            </div>
+         </div>
+      </div>
+   </div>
+<!-- ----------------------------------- END PART 10 ----------------------------------- -->
+
+
+<!-- ---------------------------------- START EC1 ---------------------------------- -->
+<div class="sect1">
+      <h2 id="_part_EC1">Extra Credit 1</h2>
+      <div class="sectionbody">
+         <div class="paragraph">
+          <p>Print the words that are in the purple category. Keep in mind that the position of the purple row may vary depending on the test image. If there is no purple row then print an error message.</p>
+
+      </div>
+         <table class="tableblock frame-all grid-all" style=" width:100%; ">
+            <colgroup><col style="width:50%;">
+            <col style="width:50%;">
+            <col style="width:50%;">
+            </colgroup><tbody>
+               <tr>
+                  <td class="tableblock halign-left valign-top">
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/partEC1/image_partEC1a.png" alt="hw2_files/placeholder.jpg" width="100%">
+                           </span>
+                        </p>
+                  </td>
+                  <td class="tableblock halign-left valign-top">
+                     <p class="tableblock">
+                        <span class="image">
+                           <!-- Extra Credit 1 image -->
+                           <img src="hw2_files/partEC1/image_partEC1a.jpg" alt="hw2_files/placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="listingblock">
+            <div class="title">Source</div>
+            <div class="content monospaced">
+               <!-- Extra Credit code -->
+               <div class="codetext">
+                   <object class="codeobject" type="text/html" data="hw2_files/partEC1/ec1_code.txt"></object>               </div>
+               <!--  -->
+            </div>
+         </div>
+      </div>
+   </div>
+<!-- ----------------------------------- END EC----------------------------------- -->
+
+<!-- ---------------------------------- START EC2 ---------------------------------- -->
+<div class="sect1">
+      <h2 id="_part_EC2">Extra Credit 2</h2>
+      <div class="sectionbody">
+         <div class="paragraph">
+          <p>Write a program in any programming language that solves the puzzle for a given image of the puzzle. That is, it takes the results of part 9, but instead of printing the matrix of words it prints four groups of four words that correspond to the categories in the puzzle. You can use any libraries or tools that you might need. Test your code on at least 5 puzzles.</p>
+      </div>
+         <table class="tableblock frame-all grid-all" style=" width:100%; ">
+            <colgroup><col style="width:50%;">
+            <col style="width:50%;">
+            <col style="width:50%;">
+            </colgroup><tbody>
+               <tr>
+                  <td class="tableblock halign-left valign-top">
+                        <p class="tableblock"><span class="image">
+                           <img src="hw2_files/partEC2/image_partEC2a.png" alt="hw2_files/placeholder.jpg" width="100%">
+                           </span>
+                        </p>
+                  </td>
+                  <td class="tableblock halign-left valign-top">
+                     <p class="tableblock">
+                        <span class="image">
+                           <!-- Extra Credit 1 image -->
+                           <img src="hw2_files/placeholder.jpg" alt="hw2_files/placeholder.jpg" width="100%">
+                           <!--  -->
+                        </span>
+                     </p>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+         <div class="listingblock">
+            <div class="title">Source</div>
+            <div class="content monospaced">
+               <!-- Extra Credit code -->
+               <div class="codetext">
+                   <object class="codeobject" type="text/html" data="hw2_files/partEC2/ec2_code.txt"></object>               </div>
+               <!--  -->
+            </div>
+         </div>
+      </div>
+   </div>
+<!-- ----------------------------------- END EC2----------------------------------- -->
+
+
+      <div id="footer">
+         <div id="footer-text">
+            Last updated: 2024-02-3
+         </div>
+      </div>
+
+</div></body></html>

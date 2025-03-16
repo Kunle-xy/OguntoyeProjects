@@ -1,0 +1,35 @@
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+
+image1 = cv.imread('image_part2b.png', cv.IMREAD_GRAYSCALE)
+ret, img = cv.threshold(image1, 200, 255, cv.THRESH_BINARY_INV)
+ret, img3 = cv.threshold(image1, 254, 255, cv.THRESH_BINARY)
+
+kernel_erode1 = cv.getStructuringElement(cv.MORPH_RECT,(1, 100))
+kernel_erode2 = cv.getStructuringElement(cv.MORPH_RECT,(100, 1))
+
+
+erode1 = cv.erode(img3, kernel_erode1, iterations=1 )
+erode2 = cv.erode(img3, kernel_erode2, iterations=1 )
+
+second = erode1 + erode2
+second[second > 200] = 255
+
+first = img3 - second
+first[first == 255] = 175
+
+kernel = np.ones((30,30),np.uint8)
+opening = cv.morphologyEx(img, cv.MORPH_OPEN, kernel)
+opening[opening==255] = 150
+
+result = opening + second + first
+
+Image3 = cv.cvtColor(result, cv.COLOR_GRAY2RGB)
+Image3[result==255] = (255,0,0)
+Image3[result==175] = (255,255,255)
+Image3[result==150] = (0,0,255)
+
+plt.imshow(Image3, cmap='gray')

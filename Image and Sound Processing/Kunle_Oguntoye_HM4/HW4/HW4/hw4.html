@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta name="generator" content="AsciiDoc 8.6.9">
+      <title>HCI/CprE/ComS 575: Homework #4</title>
+      <link rel="stylesheet" href="./riak.css" type="text/css">
+   </head>
+
+   <body class="article">
+      <div id="header">
+         <h1>HCI/CprE/ComS 575: Homework #4</h1>
+         <!-- MAKE CHANGES HERE: Student information -->
+         <span id="author">Your Name</span><br>
+         <span id="email" class="monospaced">&lt;
+         <a href="mailto:Your Email">Your Email</a>&gt;</span><br>
+         <!-- END CHANGES -->
+      </div>
+
+      <div id="content">
+
+	  <div id="preamble">
+				<div class="sectionbody">
+					<div class="paragraph">
+						<p>
+						List of Audio Libraries and References
+						</p>
+					</div>
+					<div class="paragraph">
+						<p>
+						The following list of C / C++ libraries and references for audio processing is provided for your convenience only.
+						You are not required to use any of these libraries / references for this homework.
+						<br><br>
+						<ul>
+							<li class="level1">
+								<div class="li"> <a href="http://www.fftw.org/" class="urlextern" title="http://www.fftw.org/" rel="nofollow"> Fastest Fourier Transform in the West</a> library.</div>
+							</li>
+							<li class="level1">
+								<div class="li"> <a href="https://www.youtube.com/playlist?list=PLB24BC7956EE040CD" class="urlextern" title="https://www.youtube.com/playlist?list=PLB24BC7956EE040CD" rel="nofollow"> The Fourier Transform and its Applications: A Video Course</a>. </div>
+							</li>
+							<li class="level1">
+								<div class="li"> <a href="http://kissfft.sourceforge.net/" class="urlextern" title="http://kissfft.sourceforge.net/" rel="nofollow"> Keep It Simple, Stupid FFT</a> library.</div>
+							</li>
+							<li class="level1">
+								<div class="li"> <a href="https://www.audacityteam.org/" class="urlextern" title="https://www.audacityteam.org/" rel="nofollow"> Audacity</a>. Useful for analyzing raw audio (waves) and modifying audio files (ie. stereo <--> mono).</div>
+						    </li>
+                            <li class="level1">
+                             <div class="li"> <a href="http://aubio.org/" class="urlextern" title="http://aubio.org/"  rel="nofollow">Aubio</a>.</div>
+                            </li>
+                            <li class="level1">
+                            <div class="li"> <a href="http://www.mega-nerd.com/libsndfile/" class="urlextern" title="http://www.mega-nerd.com/libsndfile/"  rel="nofollow">libsndfile</a>.</div>
+
+                            </li>
+                            <li class="level1">
+                            <div class="li"> Example code for computing the spectrogram in C: <a href="files/alsgram.zip" class="media mediafile mf_zip" title="files:alsgram.zip (4.2 KB)">alsgram.zip</a>.</div>
+</li>
+					</div>
+				</div>
+		</div>
+
+		<br>
+		<hr>
+		<br>
+
+	     <!-- PART 1A -->
+         <div class="sect1">
+            <h2 id="_part_1a">Part 1a: Slow DFT</h2>
+            <div class="sectionbody">
+               <div class="paragraph">
+                  <p>
+				  Implement the Discrete Fourier Transform (DFT) in C, C++, MATLAB, Java, or Python. Implement the <B>slow</B> version that multiplies the transform matrix by the input vector in O(N<sup>2</sup>) time. Your code should support input vectors of size up to 1024. In addition, you must implement your own functions to deal with complex numbers.
+                  </p>
+               </div>
+			   <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 1a code -->
+                     <pre>
+class Complex:
+	def __init__(self, real=0.0, imag=0.0):
+		self.real = real
+		self.imag = imag
+
+	def __add__(self, other):
+		return Complex(self.real + other.real, self.imag + other.imag)
+
+	def __sub__(self, other):
+		return Complex(self.real - other.real, self.imag - other.imag)
+
+	def __mul__(self, other):
+		return Complex(self.real * other.real - self.imag * other.imag,
+					self.real * other.imag + self.imag * other.real)
+
+	def __str__(self):
+		return f"{self.real:.2f} + {self.imag:.2F}i"
+
+def dft(input_vector):
+	N = len(input_vector)
+	output_vector = [Complex() for _ in range(N)]
+	for k in range(N):
+		sum = Complex()
+		for n in range(N):
+			angle = 2 * 3.141592653589793 * k * n / N
+			w = Complex(math.cos(angle), -math.sin(angle))
+			sum = sum + w * input_vector[n]
+		output_vector[k] = sum
+	return output_vector
+
+# Helper function to convert a list of real numbers to a list of Complex numbers
+def item_to_complex(input_list):
+	return [Complex(x, y) for x,y in input_list]
+
+# Example usage
+import math
+import random
+
+# Generate a list of 1024 tuples with random integer values
+length  = 1024
+random_list = [(random.randint(-10, 10), random.randint(-10, 10)) for _ in range(length)]
+
+
+# Input vector of real numbers
+input_vector = item_to_complex(random_list)
+# for item in input_vector:
+#   print(item)
+
+output_vector = dft(input_vector)
+
+# Display the DFT result
+# for c in output_vector:
+#     print(c)
+
+
+def display(input_list, output_list):
+	print("-----Input vector----\n")
+	for item in input_list:
+	print(f"{item}")
+	print("\n")
+	print("-----Output vector----\n")
+	for item in output_list:
+	print(f"{item}")
+
+# Display the results
+display(input_vector, output_vector)
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+	     <!-- PART 1B -->
+         <div class="sect1">
+            <h2 id="_part_1b">Part 1b: Slow IDFT</h2>
+            <div class="sectionbody">
+               <div class="paragraph">
+                  <p>
+				  Implement the Inverse Discrete Fourier Transform (IDFT) in C, C++, MATLAB, Java, or Python. Implement the <B>slow</B> version that multiplies the transform matrix by the input vector in O(N<sup>2</sup>) time. Your code should support input vectors of size up to 1024. In addition, you must implement your own functions to deal with complex numbers.
+                  </p>
+               </div>
+			   <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 1b code -->
+
+                     <pre>
+// Insert your code here
+import math
+
+class Complex:
+    def __init__(self, real=0.0, imag=0.0):
+        self.real = real
+        self.imag = imag
+
+    def __add__(self, other):
+        return Complex(self.real + other.real, self.imag + other.imag)
+
+    def __sub__(self, other):
+        return Complex(self.real - other.real, self.imag - other.imag)
+
+    def __mul__(self, other):
+        return Complex(self.real * other.real - self.imag * other.imag,
+                       self.real * other.imag + self.imag * other.real)
+
+    def __truediv__(self, other):
+        if isinstance(other, (int, float)):  # Simple division by scalars
+            return Complex(self.real / other, self.imag / other)
+        raise NotImplementedError("Division not supported for types other than scalar")
+
+    def __str__(self):
+        return f"{self.real:.2f} + {self.imag:.2f}i"
+
+def idft(input_vector):
+    N = len(input_vector)
+    output_vector = [Complex() for _ in range(N)]
+    for k in range(N):
+        sum = Complex()
+        for n in range(N):
+            angle = 2 * math.pi * k * n / N
+            w = Complex(math.cos(angle), math.sin(angle))  # Notice the sign change here
+            sum = sum + w * input_vector[n]
+        output_vector[k] = sum / N  # Normalizing by dividing by N
+    return output_vector
+
+def item_to_complex(input_list):
+    return [Complex(x, y) for x, y in input_list]
+
+# Example usage
+import random
+
+# Generate a list of tuples with random integer values for demonstration
+length = 1024
+random_list = [(random.randint(-10, 10), random.randint(-10, 10)) for _ in range(length)]
+
+# random_list = [ (2, -23), (16, -5), (-20, -5), (-2, 5)]
+
+# Convert tuples to Complex numbers
+input_vector = item_to_complex(random_list)
+
+# Compute the IDFT
+output_vector = idft(input_vector)
+
+# Function to display the vectors
+def display(input_list, output_list):
+    print("-----Input vector----\n")
+    for item in input_list:
+        print(f"{item}")
+    print("\n-----Output vector----\n")
+    for item in output_list:
+        print(f"{item}")
+
+# Display the results
+display(input_vector, output_vector)
+
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+
+		<br>
+		<hr>
+		<br>
+
+
+		 <!-- PART 2A -->
+         <div class="sect2">
+            <h2 id="_part_2a">Part 2a: FFT</h2>
+            <div class="sectionbody">
+               <div class="paragraph">
+                  <p>
+				  Implement the Fast Fourier Transform (FFT) in C, C++, MATLAB, Java, or Python. Implement the <B>fast</B> version that uses recursion and runs in O(n log<sub>2</sub> n) time. Note that you are <strong>not</strong> allowed to use
+				  MATLAB's implementation nor any other existing library for this problem. Your code should support input vectors of size up to 1024. Use your code from Part 1a to cross-check your implementation. In part 2, you can use any library functions that work with complex numbers (but not in part 1).
+                  </p>
+               </div>
+			   <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 2a code -->
+                     <pre>
+class Complex:
+	def __init__(self, real=0.0, imag=0.0):
+		self.real = real
+		self.imag = imag
+
+	def __add__(self, other):
+		return Complex(self.real + other.real, self.imag + other.imag)
+
+	def __sub__(self, other):
+		return Complex(self.real - other.real, self.imag - other.imag)
+
+	def __mul__(self, other):
+		return Complex(self.real * other.real - self.imag * other.imag,
+						self.real * other.imag + self.imag * other.real)
+
+	def __truediv__(self, other):
+		if isinstance(other, (int, float)):
+			return Complex(self.real / other, self.imag / other)
+		raise NotImplementedError("Division not supported for types other than scalar")
+
+	def __str__(self):
+		return f"{self.real:.2f} + {self.imag:.2f}i"
+
+	@staticmethod
+	def exp(theta):
+		"""Compute e^(i*theta) using Euler's formula"""
+		from math import cos, sin
+		return Complex(cos(theta), sin(theta))
+
+def fft(x):
+	N = len(x)
+	if N <= 1:
+		return x
+	even = fft(x[0::2])
+	odd = fft(x[1::2])
+	T = [Complex.exp(-2 * 3.141592653589793 * k / N) * odd[k] for k in range(N // 2)]
+	return [even[k] + T[k] for k in range(N // 2)] + [even[k] - T[k] for k in range(N // 2)]
+
+
+def display(input_list, output_list):
+	print("-----Input vector----\n")
+	for item in input_list:
+		print(f"{item}")
+	print("\n-----Output vector----\n")
+	for item in output_list:
+		print(f"{item}")
+
+# Example usage
+if __name__ == "__main__":
+	# Generate a sample input vector of Complex numbers (length must be a power of 2)
+	# x = [Complex(0.0, 0.0) for _ in range(8)]  # Example with zeros
+	# x[1] = Complex(1.0, 0.0)  # Adding a non-zero element
+	x = input_vector # from part 1a
+
+	# Compute FFT
+	X_fft = fft(x)
+	display(x, X_fft)
+	# Print the FFT result
+
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+		 <!-- PART 2B -->
+         <div class="sect2">
+            <h2 id="_part_2b">Part 2b: IFFT</h2>
+            <div class="sectionbody">
+               <div class="paragraph">
+                  <p>
+				  Implement the Inverse Fast Fourier Transform (IFFT) in C, C++, MATLAB, Java, or Python. Implement the <B>fast</B> version that uses recursion and runs in O(n log<sub>2</sub> n) time. Note that you are <strong>not</strong> allowed to use
+				  MATLAB's implementation nor any other existing library for this problem. Your code should support input vectors of size up to 1024. Use your code from Part 1b to cross-check your implementation. In part 2, you can use any library functions that work with complex numbers (but not in part 1).
+                  </p>
+               </div>
+			   <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 2b code -->
+                     <pre>
+class Complex:
+	def __init__(self, real=0.0, imag=0.0):
+		self.real = real
+		self.imag = imag
+
+	def __add__(self, other):
+		return Complex(self.real + other.real, self.imag + other.imag)
+
+	def __sub__(self, other):
+		return Complex(self.real - other.real, self.imag - other.imag)
+
+	def __mul__(self, other):
+		return Complex(self.real * other.real - self.imag * other.imag,
+						self.real * other.imag + self.imag * other.real)
+
+	def __truediv__(self, other):
+		if isinstance(other, (int, float)):
+			return Complex(self.real / other, self.imag / other)
+		raise NotImplementedError("Division not supported for types other than scalar")
+
+	def __str__(self):
+		return f"{self.real:.2f} + {self.imag:.2f}i"
+
+	@staticmethod
+	def exp(theta):
+		"""Compute e^(i*theta) using Euler's formula"""
+		from math import cos, sin
+		return Complex(cos(theta), sin(theta))
+
+def fft(x):
+	N = len(x)
+	if N <= 1:
+		return x
+	even = fft(x[0::2])
+	odd = fft(x[1::2])
+	T = [Complex.exp(-2 * 3.141592653589793 * k / N) * odd[k] for k in range(N // 2)]
+	return [even[k] + T[k] for k in range(N // 2)] + [even[k] - T[k] for k in range(N // 2)]
+
+def ifft(x):
+	N = len(x)
+	if N <= 1:
+		return x
+
+	# Conjugate the complex numbers
+	x_conjugate = [Complex(a.real, -a.imag) for a in x]
+
+	# Compute FFT on conjugated input
+	X_fft_conjugate = fft(x_conjugate)
+
+	# Conjugate the computed FFT and normalize
+	X_ifft = [Complex(a.real, -a.imag) / N for a in X_fft_conjugate]
+
+	return X_ifft
+
+
+def display(input_list, output_list):
+	print("-----Input vector----\n")
+	for item in input_list:
+		print(f"{item}")
+	print("\n-----Output vector----\n")
+	for item in output_list:
+		print(f"{item}")
+
+if __name__ == "__main__":
+	# Assuming input_vector is defined somewhere in your code as shown previously
+	# input_vector = [Complex(1, -1), Complex(1, 0), Complex(1, 1), Complex(0, 0)]  # Sample input
+
+	# First compute the FFT of the input
+	fft_result = fft(input_vector)
+	print("FFT Result:")
+	display(input_vector, fft_result)
+
+	# Then compute the IFFT of the FFT result
+	ifft_result = ifft(fft_result)
+	print("\nIFFT Result (Should closely resemble the original input):")
+	display(fft_result, ifft_result)
+
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+
+		<br>
+		<hr>
+		<br>
+
+        <!-- PART 3A -->
+		<div class="sect3">
+            <h2 id="_part_3a">Part 3a: FFT check</h2>
+            <div class="sectionbody">
+                <div class="paragraph">
+                  <p>
+				  Using your implementation from Part 2a, compute the Discrete Fourier Transform of the following vector:
+				  </p>
+                </div>
+			    <div class="listingblock">
+						<div class="title">Vector 'x'</div>
+						<div class="content">
+							<pre><h4><tt>[0, 0.7071, 1, 0.7071, 0, -0.7071, -1, -0.7071]</tt></h4></pre>
+						</div>
+				</div>
+				<div class="paragraph">
+                  <p>
+				  <i>Note: you may want to use sqrt(2)/2 instead of 0.7071.</i>
+				  </p>
+                </div>
+			   <div class="listingblock">
+                  <div class="title">Result</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 3a results -->
+                     <pre>
+// Insert your resulting vector here
+[0.0000 + 0.0000i, 0.0000 + -4.0000i, 0.0000 + 0.0000i, 0.0000 + 0.0000i, 0.0000 + 0.0000i, -0.0000 + -0.0000i, 0.0000 + 0.0000i, -0.0000 + 4.0000i]
+					 </pre>
+					 <!-- END CHANGES -->
+				  </div>
+			   </div>
+			   <div class="paragraph">
+				  <p>
+				  Compare your output with the output generated by MATLAB's fft() method for the same vector 'x'. Include the result below, and point out any discrepancies. You may also use one of the FFT libraries above, if you choose.
+				  </p>
+				</div>
+			   <div class="listingblock">
+				  <div class="title">Matlab Result & Analysis</div>
+				  <div class="content monospaced">
+					 <!-- MAKE CHANGES HERE: Part 3a results -->
+					 <pre>
+
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+               <div class="paragraph">
+                  <p>
+				  Compare your output with the output generated by MATLAB's fft() method for the same vector 'x'. Include the result below, and point out any discrepancies. You may also use one of the FFT libraries above, if you choose.
+				  </p>
+                </div>
+			   <div class="listingblock">
+                  <div class="title">Matlab Result & Analysis</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 1c results -->
+                     <pre>
+// Insert your new resulting vector here
+[0.0000 + 0.0000i,   0.0000 - 4.0000i,   0.0000 + 0.0000i,   0.0000 + 0.0000i,   0.0000 + 0.0000i,   0.0000 - 0.0000i,
+0.0000 + 0.0000i,   0.0000 + 4.0000i]
+
+// Insert any comments here
+Using zero-indexing, the 5th and the 7th complex numbers' real components differ in vector directions. However, this is inconsquential as the real number in both cases is 0. Aside this, both resulting vectors are equal in magnitude and phase.
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+
+
+        <!-- PART 3B -->
+		<div class="sect3">
+            <h2 id="_part_3b">Part 3b: IFFT check</h2>
+            <div class="sectionbody">
+                <div class="paragraph">
+                  <p>
+				  Using your implementation from Part 2b, compute the inverse Discrete Fourier Transform of the following vector:
+				  </p>
+                </div>
+			    <div class="listingblock">
+						<div class="title">Vector 'X'</div>
+						<div class="content">
+							<pre><h4><tt>[0, -4i, 0, 0, 0, 0, 0, 4i]</tt></h4></pre>
+						</div>
+				</div>
+			   <div class="listingblock">
+                  <div class="title">Result</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 3b results -->
+                     <pre>
+// Insert your resulting vector here
+[0.0000 + -0.0000i,
+0.7071 + -0.0000i,
+1.0000 + -0.0000i,
+0.7071 + -0.0000i,
+0.0000 + 0.0000i,
+-0.7071 + 0.0000i,
+-1.0000 + 0.0000i,
+-0.7071 + 0.0000i]
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+            <div class="sectionbody">
+                <div class="paragraph">
+                  <p>
+				  Compare your output with the output generated by MATLAB's ifft() method for the same vector 'X'. Include the result below, and point out any discrepancies. You may also use one of the IFFT libraries above, if you choose.
+				  </p>
+                </div>
+			   <div class="listingblock">
+                  <div class="title">Result & Analysis</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 3b results -->
+                     <pre>
+// Insert your new resulting vector here
+[ 0 ,  0.7071  ,  1.0000  ,  0.7071    ,     0  , -0.7071 , -1.0000  , -0.7071]
+
+// Insert any comments here
+
+Just like in part 3a, the results from the IFFT implementations are equal in magnitude and in phase. the only obvious difference is the sign of the imag component of the first four complex numbers from python, which is insignificant since it is 0.
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+		<br>		<hr>
+		<br>
+
+		<!-- PART 4 -->
+        <div class="sect4">
+            <h2 id="_part_4a">Part 4a</h2>
+            <div class="sectionbody">
+               <div class="paragraph">
+                  <p>Using any FFT and IFFT  implementation, compute and plot the spectrograms for the following 3 audio files.
+In case you are curious, these audio snippets came from a video game.
+		          </p>
+               </div>
+               <div class="level2">
+			<div class="table sectionedit4">
+				<table class="inline">
+					<thead>
+						<tr class="row0">
+							<th class="col0"> Audio Data </th>
+							<th class="col1"> Spectrogram </th>
+						</tr>
+					</thead>
+					<tr class="row1">
+						<td class="col0">
+							<audio class="media" controls="controls">
+								<source src="input/Part_4/4a/ball_bounce_brick_mono.wav" type="audio/wav" />
+								<a href="input/Part_4/4a/ball_bounce_brick_mono.wav" class="media mediafile mf_wav" title="ball_bounce_brick_mono">ball_bounce_brick_mono</a>
+							</audio>
+						</td>
+						<td class="col1">
+							<span class="image">
+								<!-- MAKE CHANGES HERE: Part 4 Spectrogram 1 -->
+								<img src="output/Part_4/4a_1.jpg" alt="Spectrogram1" width="100%">
+								<!-- END CHANGES -->
+                            </span>
+						</td>
+					</tr>
+					<tr class="row2">
+						<td class="col0">
+							<audio class="media" controls="controls">
+								<source src="input/Part_4/4a/ball_bounce_paddle_mono.wav" type="audio/wav" />
+								<a href="input/Part_4/4a/ball_bounce_paddle_mono.wav" class="media mediafile mf_wav" title="ball_bounce_paddle_mono">ball_bounce_paddle_mono</a>
+							</audio>
+						</td>
+						<td class="col1">
+							<span class="image">
+								<!-- MAKE CHANGES HERE: Part 4 Spectrogram 2 -->
+								<img src="output/Part_4/4a_2.jpg" alt="Spectrogram2" width="100%">
+								<!-- END CHANGES -->
+                            </span>
+						</td>
+					</tr>
+					<tr class="row3">
+						<td class="col0">
+							<audio class="media" controls="controls">
+								<source src="input/Part_4/4a/paddle_widening_mono.wav" type="audio/wav" />
+								<a href="input/Part_4/4a/paddle_widening_mono.wav" class="media mediafile mf_wav" title="paddle_widening_mono">paddle_widening_mono</a>
+							</audio>
+						</td>
+						<td class="col1">
+							<span class="image">
+								<!-- MAKE CHANGES HERE: Part 4 Spectrogram 3 -->
+								<img src="output/Part_4/4a_3.jpg" alt="Spectrogram3" width="100%">
+								<!-- END CHANGES -->
+                            </span>
+						</td>
+					</tr>
+				</table>
+			</div>
+			   <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 4 code -->
+                     <pre>
+// Insert your code here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Read from a WAV file and plot the Spectrogram
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+clear all;close all; clc;
+[Y,fs]=audioread('paddle_widening_mono.wav'); % read the WAV file
+figure;
+plot(1:1000,Y(1:1000), 'b.')     % plot the first 1000 samples
+xlabel('Sample number (only the first 1000)');
+ylabel('Y');
+title('Discrete Audio Samples');
+
+% Replot as a continuous function
+figure;
+plot(1:1000,Y(1:1000), 'b')     % plot the first 1000 samples
+xlabel('Sample number (only the first 1000)');
+ylabel('Y');
+title('Interpolation of the Audio Samples');
+
+% Y   - audio data samples
+% 512 - window size  (in samples)
+% 256 - overlap      (in samples)
+% 512 - FFT size     (in samples)
+% fs  - sampling frequency (in Hz)
+% 'yaxis' - put the frequencies along the y axis
+figure;
+% spectrogram(Y, 512, 256, fs/10, fs, 'yaxis');  %for first two sounds
+
+spectrogram(Y, 2048, 256, fs/10, fs, 'yaxis'); % for third sound
+title('Spectrogram for the sound');
+
+% store the spectrogram data in the complex matrix S
+% S=spectrogram(Y, 10, 1, 5, fs, 'yaxis');
+
+% play it
+% sound(Y, fs)
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+		<br>
+		<hr>
+		<br>
+
+
+
+		<!-- PART 4b -->
+        <div class="sect5">
+            <h2 id="_part_4b">Part 4b</h2>
+            <div class="sectionbody">
+               <div class="paragraph">
+                <p>Repeat what you did in part 4a, but now process three audio files that you recorded while playing your favorite game. Describe how you recorded the audio and what parameters were used (e.g., sampling frequency, duration). Also, describe the parameters that you used to compute the spectrograms (you can put this in the comments for your code). Modify the HTML template so that your files are linked and your spectrograms are shown to the right of each audio file. Replace the three audio files in this folder with your own files.
+		          </p>
+               </div>
+               <div class="level2">
+			<div class="table sectionedit4">
+				<table class="inline">
+					<thead>
+						<tr class="row0">
+							<th class="col0"> Audio Data </th>
+							<th class="col1"> Spectrogram </th>
+						</tr>
+					</thead>
+					<tr class="row1">
+						<td class="col0">
+							<audio class="media" controls="controls">
+								<source src="input/Part_4/4b/chess.m4a" type="audio/wav" />
+								<a href="input/Part_4/4b/chess.m4a" class="media mediafile mf_wav" title="sound1">sound1</a>
+							</audio>
+						</td>
+						<td class="col1">
+							<span class="image">
+								<!-- MAKE CHANGES HERE: Part 4b Spectrogram 1 -->
+								<img src="output/Part_4/chess_1.jpg" alt="Spectrogram1" width="100%">
+								<!-- END CHANGES -->
+                            </span>
+						</td>
+					</tr>
+					<tr class="row2">
+						<td class="col0">
+							<audio class="media" controls="controls">
+								<source src="input/Part_4/4b/chess_2.m4a" type="audio/wav" />
+								<a href="input/Part_4/4b/chess_2.m4a" class="media mediafile mf_wav" title="sound2">sound2</a>
+							</audio>
+						</td>
+						<td class="col1">
+							<span class="image">
+								<!-- MAKE CHANGES HERE: Part 4b Spectrogram 2 -->
+								<img src="output/Part_4/chess_2.jpg" alt="Spectrogram2" width="100%">
+								<!-- END CHANGES -->
+                            </span>
+						</td>
+					</tr>
+					<tr class="row3">
+						<td class="col0">
+							<audio class="media" controls="controls">
+								<source src="input/Part_4/4b/modulatedSound.wav" type="audio/wav" />
+								<a href="input/Part_4/4b/modulatedSound.wav" class="media mediafile mf_wav" title="sound3">sound3</a>
+							</audio>
+						</td>
+						<td class="col1">
+							<span class="image">
+								<!-- MAKE CHANGES HERE: Part 4b Spectrogram 3 -->
+								<img src="output/Part_4/modulated.jpg" alt="Spectrogram3" width="100%">
+								<!-- END CHANGES -->
+                            </span>
+						</td>
+					</tr>
+				</table>
+			</div>
+			   <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 5 code -->
+                     <pre>
+// Insert your code here
+I recorded the first two sounds with my Iphone 14 Pro voice memo recorder which samples at 48 KHz. Both sounds are from chess game with the first without background music and the second with background music.
+Due to lack of varities, i decided to reconstruct new sound using first and second sound. Since the first two have different time length, first(10s ) and second (25s), i initially pad the first sound with zero and then scaled down both sounds by different factors as shown in the code before subtractions.
+
+For the spectogram, i used a window size of 1024, with 50% overlap (512), nFFT used is one-tenth of the sampling frequency (4800)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Code %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+clear all;close all; clc;
+[v1,fs1]=audioread('chess_2.m4a'); % read the WAV file
+[v2,fs2]=audioread('chess.m4a'); % read the WAV file
+
+% Determine the length of each vector
+length1 = length(v1);
+length2 = length(v2);
+
+% Find the difference in lengths
+length_diff = abs(length1 - length2);
+
+% Pad the shorter vector with zeros
+if length1 < length2
+    v1 = [v1; zeros( length_diff, 1)];
+elseif length2 < length1
+    v2 = [v2; zeros( length_diff, 1)];
+end
+
+% Now that they are the same length, add them
+Y = v1/50 - v2/10;
+
+figure;
+plot(Y(1:end), 'b')     % plot the first 1000 samples
+xlabel('Sample number (only the first 1000)');
+ylabel('Y');
+title('Interpolation of the Audio Samples');
+
+
+figure;
+
+spectrogram(Y, 1024, 512, fs1/10, fs1, 'yaxis'); % for third sound
+title('Spectrogram for the sound');
+
+
+
+audiowrite('modulatedSound.wav', Y, fs1)
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+		<br>
+		<hr>
+		<br>
+
+
+
+
+
+
+		<!-- PART 5 -->
+        <div class="sect6">
+            <h2 id="_part_5">Part 5</h2>
+          <p>
+Your task is to write a program that can detect a single note in an audio data and print it. The program should handle audio generated by different musical instruments. The notes will be restricted to piano notes listed in <a href="http://en.wikipedia.org/wiki/Piano_key_frequencies" class="urlextern" title="http://en.wikipedia.org/wiki/Piano_key_frequencies" rel="nofollow">this Wikipedia page</a> (also cached here in <a href="files/piano-key-freq-wikipedia.pdf" class="media mediafile mf_pdf" title="files:piano-key-freq-wikipedia.pdf (93.7 KB)">PDF</a>), but any of these notes may be the one. The program should print the note in the <a href="http://en.wikipedia.org/wiki/Scientific_pitch_notation" class="urlextern" title="http://en.wikipedia.org/wiki/Scientific_pitch_notation" rel="nofollow">scientific notation</a>.
+</p>
+
+</div>
+
+<h5 id="hintone_way_to_solve_this_problem_is_to_perform_frequency-domain_analysis_eg_using_a_spectrogram_of_the_audio_data_and_look_for_the_location_of_peaks_the_highest_peak_should_be_at_the_frequency_of_the_note">Hint: one way to solve this problem is to perform frequency-domain analysis (e.g., using a spectrogram) of the audio data and look for the location of peaks. The highest peak should be at the frequency of the note.</h5>
+<div class="level5">
+
+</div>
+
+<h5 id="students_with_perfect_pitch_are_not_exempt_from_solving_this_problem_the_note_must_be_detected_by_the_program_and_not_by_the_programmer">Students with perfect pitch are not exempt from solving this problem. The note must be detected by the program and not by the programmer.</h5>
+<div class="level5">
+
+</div>
+
+<h2 class="sectionedit3" id="part_a_piano">Part 5a. Piano</h2>
+<div class="level2">
+<div class="table sectionedit4"><table class="inline">
+	<thead>
+	<tr class="row0">
+		<th class="col0"> Audio Data </th><th class="col1"> Note </th><th class="col2"> Program Output </th>
+	</tr>
+	</thead>
+	<tbody><tr class="row1">
+		<td class="col0"> <audio class="media" controls="controls">
+<source src="input/Part_5/5a/c4-piano.wav" type="audio/wav">
+<a href="input/Part_5/5a/c4-piano.wav" class="media mediafile mf_wav" title="files:c4-piano.wav (45.5 KB)">c4-piano.wav</a></audio>
+ </td><td class="col1"> C4 </td><td class="col2"> C5. </td>
+	</tr>
+	<tr class="row2">
+		<td class="col0"> <audio class="media" controls="controls">
+<source src="input/Part_5/5a/piano-note2.wav" type="audio/wav">
+<a href="input/Part_5/5a/piano-note2.wav" class="media mediafile mf_wav" title="files:piano-note2.wav (91.4 KB)">piano-note2.wav</a></audio>
+ </td><td class="col1"> B2 </td><td class="col2"> B4. </td>
+	</tr>
+	<tr class="row3">
+		<td class="col0"> <audio class="media" controls="controls">
+<source src="input/Part_5/5a/piano-note3.wav" type="audio/wav">
+<a href="input/Part_5/5a/piano-note3.wav" class="media mediafile mf_wav" title="files:piano-note3.wav (124.6 KB)">piano-note3.wav</a></audio>
+ </td><td class="col1"> F6 </td><td class="col2"> F6. </td>
+	</tr>
+	<tr class="row4">
+		<td class="col0"> <audio class="media" controls="controls">
+<source src="input/Part_5/5a/piano-note4.wav" type="audio/wav">
+<a href="input/Part_5/5a/piano-note4.wav" class="media mediafile mf_wav" title="files:piano-note4.wav (132.8 KB)">piano-note4.wav</a></audio>
+ </td><td class="col1"> F5. </td><td class="col2"> F5. </td>
+	</tr>
+	<tr class="row5">
+		<td class="col0"> <audio class="media" controls="controls">
+<source src="input/Part_5/5a/piano-note5.wav" type="audio/wav">
+<a href="input/Part_5/5a/piano-note5.wav" class="media mediafile mf_wav" title="files:piano-note5.wav (142 KB)">piano-note5.wav</a></audio>
+ </td><td class="col1"> A5. </td><td class="col2"> A5. </td>
+	</tr>
+	<tr class="row6">
+		<td class="col0"> <audio class="media" controls="controls">
+<source src="input/Part_5/5a/piano-note6.wav" type="audio/wav">
+<a href="input/Part_5/5a/piano-note6.wav" class="media mediafile mf_wav" title="files:piano-note6.wav (142 KB)">piano-note6.wav</a></audio>
+ </td><td class="col1"> B4. </td><td class="col2"> B4. </td>
+	</tr>
+	<tr class="row7">
+		<td class="col0"> <audio class="media" controls="controls">
+<source src="input/Part_5/5a/piano-note7.wav" type="audio/wav">
+<a href="input/Part_5/5a/piano-note7.wav" class="media mediafile mf_wav" title="files:piano-note7.wav (172.2 KB)">piano-note7.wav</a></audio>
+ </td><td class="col1"> G3. </td><td class="col2"> G3. </td>
+	</tr>
+</tbody></table></div>
+
+       <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 5a results -->
+                     <pre>
+// Insert your code here
+import numpy as np
+from scipy.io.wavfile import read
+from scipy.signal import find_peaks
+
+# Load the audio file (assuming it's a WAV file)
+# sampling_rate, data = read('c4-piano.wav')
+sampling_rate, data = read('piano-note7.wav')
+
+# If the data is stereo, convert it to mono
+if len(data.shape) > 1:
+    data = data.mean(axis=1)
+
+# Apply a Hanning window
+windowed_data = data * np.hanning(len(data))
+
+# Perform the FFT
+fft_spectrum = np.fft.fft(windowed_data)
+frequencies = np.fft.fftfreq(len(fft_spectrum), 1/sampling_rate)
+
+# Find the peak frequency
+magnitude = np.abs(fft_spectrum)  # Get the magnitude
+peak_index = np.argmax(magnitude[:len(data)//2])  # Only look at the first half of the spectrum
+peak_frequency = frequencies[peak_index]
+# print(peak_frequency)
+
+# Function to map frequency to piano note
+A4_freq = 440.0
+# Define the standard key number for A4
+A4_key = 49
+
+def frequency_to_note(frequency):
+    # Calculate the key number for the given frequency
+    n = 12 * np.log2(frequency/A4_freq) + A4_key
+
+    # Round the key number to the nearest integer to map it to the closest key
+    n = int(round(n))
+
+    # Define the names of the notes in one octave
+    note_names = [
+        'A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'
+    ]
+
+    # Calculate the octave
+    # octave = (n // 12) - 1
+    octave = (n + 8)//12
+
+    # Get the note name from the note names array
+    note_index = (n % 12) - 1
+    note_name = note_names[note_index]
+
+    # Combine the note name and the octave
+    return f"{note_name}{octave}"
+
+# Get the note in scientific pitch notation
+note = frequency_to_note(peak_frequency)
+
+# Print the note
+print(note)
+
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+</div>
+
+<h2 class="sectionedit3" id="part_a_piano">Part 5b. Different Instruments</h2>
+<div class="level2">
+<div class="table sectionedit6"><table class="inline">
+	<thead>
+	<tr class="row0">
+		<th class="col0"> Instrument </th><th class="col1"> Audio Data </th><th class="col2"> Note </th><th class="col3"> Program Output </th>
+	</tr>
+	</thead>
+	<tbody><tr class="row1">
+		<td class="col0"> Piano </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_5/5b/c4-piano.wav" type="audio/wav">
+<a href="input/Part_5/5b/c4-piano.wav" class="media mediafile mf_wav" title="files:c4-piano.wav (45.5 KB)">c4-piano.wav</a></audio>
+ </td><td class="col2"> C4 </td><td class="col3"> C5. </td>
+	</tr>
+	<tr class="row2">
+		<td class="col0"> Electric Guitar </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_5/5b/c4-guitar.wav" type="audio/wav">
+<a href="input/Part_5/5b/c4-guitar.wav" class="media mediafile mf_wav" title="files:c4-guitar.wav (153.9 KB)">c4-guitar.wav</a></audio>
+ </td><td class="col2"> C4 </td><td class="col3"> G4. </td>
+	</tr>
+	<tr class="row3">
+		<td class="col0"> Violin </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_5/5b/violin-note1.wav" type="audio/wav">
+<a href="input/Part_5/5b/violin-note1.wav" class="media mediafile mf_wav" title="files:violin-note1.wav (585.7 KB)">violin-note1.wav</a></audio>
+ </td><td class="col2"> A4 </td><td class="col3"> A#4. </td>
+	</tr>
+	<tr class="row4">
+		<td class="col0"> Violin </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_5/5b/violin-note2.wav" type="audio/wav">
+<a href="input/Part_5/5b/violin-note2.wav" class="media mediafile mf_wav" title="files:violin-note2.wav (585.7 KB)">violin-note2.wav</a></audio>
+ </td><td class="col2"> A#5. </td><td class="col3"> A#5. </td>
+	</tr>
+	<tr class="row5">
+		<td class="col0"> Trumpet </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_5/5b/trumpet-note1.wav" type="audio/wav">
+<a href="input/Part_5/5b/trumpet-note1.wav" class="media mediafile mf_wav" title="files:trumpet-note1.wav (90 KB)">trumpet-note1.wav</a></audio>
+ </td><td class="col2"> C7. </td><td class="col3"> C7. </td>
+	</tr>
+	<tr class="row6">
+		<td class="col0"> Trumpet </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_5/5b/trumpet-note2.wav" type="audio/wav">
+<a href="input/Part_5/5b/trumpet-note2.wav" class="media mediafile mf_wav" title="files:trumpet-note2.wav (96.8 KB)">trumpet-note2.wav</a></audio>
+ </td><td class="col2"> E4. </td><td class="col3"> E4. </td>
+	</tr>
+	<tr class="row7">
+		<td class="col0"> Tuba </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_5/5b/tuba-note1.wav" type="audio/wav">
+<a href="input/Part_5/5b/tuba-note1.wav" class="media mediafile mf_wav" title="files:tuba-note1.wav (65.3 KB)">tuba-note1.wav</a></audio>
+ </td><td class="col2"> F#4 </td><td class="col3"> F#4 </td>
+	</tr>
+	<tr class="row8">
+		<td class="col0"> Bassoon </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_5/5b/bassoon-note1.wav" type="audio/wav">
+<a href="input/Part_5/5b/bassoon-note1.wav" class="media mediafile mf_wav" title="files:bassoon-note1.wav (108 KB)">bassoon-note1.wav</a></audio>
+ </td><td class="col2"> A#4. </td><td class="col3"> A#4. </td>
+	</tr>
+	<tr class="row9">
+		<td class="col0"> Marimba </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_5/5b/marimba-note1.wav" type="audio/wav">
+<a href="input/Part_5/5b/marimba-note1.wav" class="media mediafile mf_wav" title="files:marimba-note1.wav (42.6 KB)">marimba-note1.wav</a></audio>
+ </td><td class="col2"> E6. </td><td class="col3"> E6. </td>
+	</tr>
+	<tr class="row10">
+		<td class="col0"> Marimba </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_5/5b/marimba-note2.wav" type="audio/wav">
+<a href="input/Part_5/5b/marimba-note2.wav" class="media mediafile mf_wav" title="files:marimba-note2.wav (42.4 KB)">marimba-note2.wav</a></audio>
+ </td><td class="col2"> B5. </td><td class="col3"> B5. </td>
+	</tr>
+</tbody></table></div>
+
+</div>
+       <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part 5b results -->
+                     <pre>
+
+<b>Ditto</b>
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+		<br>
+		<hr>
+		<br>
+
+
+
+
+
+
+
+
+        <h1 id="_ec">Extra Credit 1</h1>
+
+	     <!-- PART EC -->
+         <div class="sectEC">
+
+            <div class="sectionbody">
+               <div class="paragraph">
+<p>
+In this problem you have to write a program that can recognize single notes in a sequence and print them in the same order as they are played. The program should print the note in the <a href="http://en.wikipedia.org/wiki/Scientific_pitch_notation" class="urlextern" title="http://en.wikipedia.org/wiki/Scientific_pitch_notation" rel="nofollow">scientific notation</a>. There are no chords in the audio data.
+</p>
+<h3 class="sectionedit8" id="part_a_short_piano_melodies_single_notes">Part A. Short Piano Melodies, Single Notes</h3>
+<div class="level2">
+<div class="table sectionedit9"><table class="inline">
+	<thead>
+	<tr class="row0">
+		<th class="col0"> Audio Data </th><th class="col1"> Notes </th><th class="col2"> Program Output </th>
+	</tr>
+	</thead>
+	<tbody><tr class="row1">
+		<td class="col0"> <audio class="media" controls="controls">
+<source src="input/Part_EC/ec1/short-melody-example-1.wav" type="audio/wav">
+<a href="input/Part_EC/ec1/short-melody-example-1.wav" class="media mediafile mf_wav" title="files:short-melody-example-1.wav (689.5 KB)">short-melody-example-1.wav</a></audio>
+ </td><td class="col1"> C4 C4 G4 G4 A4 A4 G4 </td><td class="col2"> Output of your program. </td>
+	</tr>
+	<tr class="row2">
+		<td class="col0"> <audio class="media" controls="controls">
+<source src="input/Part_EC/ec1/short-melody-1.wav" type="audio/wav">
+<a href="input/Part_EC/ec1/short-melody-1.wav" class="media mediafile mf_wav" title="files:short-melody-1.wav (415.3 KB)">short-melody-1.wav</a></audio>
+ </td><td class="col1"> Output of your program. </td><td class="col2"> Output of your program. </td>
+	</tr>
+	<tr class="row3">
+		<td class="col0"> <audio class="media" controls="controls">
+<source src="input/Part_EC/ec1/short-melody-2.wav" type="audio/wav">
+<a href="input/Part_EC/ec1/short-melody-2.wav" class="media mediafile mf_wav" title="files:short-melody-2.wav (673.2 KB)">short-melody-2.wav</a></audio>
+ </td><td class="col1"> Output of your program. </td><td class="col2"> Output of your program. </td>
+	</tr>
+</tbody></table></div>
+
+       <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part EC1a results -->
+                     <pre>
+// Insert your code here
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+<h3 class="sectionedit10" id="part_b_short_melodies_played_with_different_instruments_single_notes">Part B. Short Melodies Played with Different Instruments, Single Notes</h3>
+<div class="level2">
+<div class="table sectionedit11"><table class="inline">
+	<thead>
+	<tr class="row0">
+		<th class="col0"> Instrument </th><th class="col1"> Audio Data </th><th class="col2"> Notes </th><td class="col3"></td>
+	</tr>
+	</thead>
+	<tr class="row1">
+		<td class="col0"> Electric Piano </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_EC/ec1/electric-piano-example-1.wav" type="audio/wav" />
+<a href="input/Part_EC/ec1/electric-piano-example-1.wav" class="media mediafile mf_wav" title="files:electric-piano-example-1.wav (705.2 KB)">electric-piano-example-1.wav</a></audio>
+ </td><td class="col2"> C#2 C#2 C#2 C#2 B2 B2 B2 C#3 D3 </td><td class="col3"> Output of your program. </td>
+	</tr>
+	<tr class="row2">
+		<td class="col0"> Electric Piano </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_EC/ec1/short-melody-3.wav" type="audio/wav" />
+<a href="input/Part_EC/ec1/short-melody-3.wav" class="media mediafile mf_wav" title="files:short-melody-3.wav (1.2 MB)">short-melody-3.wav</a></audio>
+ </td><td class="col2"> Output of your program. </td><td class="col3"> Output of your program. </td>
+	</tr>
+	<tr class="row3">
+		<td class="col0"> Radio Tuning Signal </td><td class="col1"> <audio class="media" controls="controls">
+<source src="input/Part_EC/ec1/short-melody-4.wav" type="audio/wav" />
+<a href="input/Part_EC/ec1/short-melody-4.wav" class="media mediafile mf_wav" title="files:short-melody-4.wav (1.3 MB)">short-melody-4.wav</a></audio>
+ </td><td class="col2"> Output of your program. </td><td class="col3"> Output of your program. </td>
+	</tr>
+</table></div>
+
+</div>
+
+
+</div>
+               <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part EC1b results -->
+                     <pre>
+// Insert your code here
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+			  <br>
+			  <br>
+
+			          <h1 id="_ec">Extra Credit 2</h1>
+
+	     <!-- PART EC -->
+         <div class="sectEC2">
+            <h2 id="_part_ec">Non-Recursive FFT</h2>
+            <div class="sectionbody">
+               <div class="paragraph">
+                  <p>
+				  Implement a <b>non-recursive</b> version of the Fast Fourier Transform (FFT) in C, C++, MATLAB, Java, or Python. This is the <b>iterative</b> version of the algorithm that still runs in O(N log<sub>2</sub>N) time, but does not use recursion. Your code should support input vectors of size up to 1024. Once again, this must be your own implementation. Run your code on the vector from part 3a and report the result.
+                  </p>
+               </div>
+			   <div class="listingblock">
+                  <div class="title">Source</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part EC2 code -->
+                     <pre>// Insert your code here
+class Complex:
+	def __init__(self, real=0.0, imag=0.0):
+		self.real = real
+		self.imag = imag
+
+	def __add__(self, other):
+		return Complex(self.real + other.real, self.imag + other.imag)
+
+	def __sub__(self, other):
+		return Complex(self.real - other.real, self.imag - other.imag)
+
+	def __mul__(self, other):
+		return Complex(self.real * other.real - self.imag * other.imag,
+						self.real * other.imag + self.imag * other.real)
+
+	def __truediv__(self, other):
+		if isinstance(other, (int, float)):
+			return Complex(self.real / other, self.imag / other)
+		raise NotImplementedError("Division not supported for types other than scalar")
+
+	def __str__(self):
+		return f"{self.real:.4f} + {self.imag:.4f}i"
+
+	@staticmethod
+	def exp(theta):
+		from math import cos, sin
+		return Complex(cos(theta), sin(theta))
+
+def fft_iterative(x):
+	N = len(x)
+	# Bit reversal of the input array for in-place FFT
+	indices = list(range(N))
+	for i in range(N):
+		rev = int('{:0{width}b}'.format(i, width=int(np.log2(N)))[::-1], 2)
+		if rev > i:
+			x[i], x[rev] = x[rev], x[i]
+
+	# FFT computation by the iterative approach
+	stage = 1
+	while stage <= N // 2:
+		delta = 2 * np.pi / (2 * stage)
+		for i in range(0, N, 2 * stage):
+			for j in range(stage):
+				exp_coeff = -j * delta
+				w = Complex.exp(exp_coeff)
+				u = x[i + j]
+				v = x[i + j + stage] * w
+				x[i + j] = u + v
+				x[i + j + stage] = u - v
+		stage *= 2
+	return x
+
+# Example usage
+
+def display(input_list, output_list):
+	print("-----Input vector----\n")
+	for item in input_list:
+		print(f"{item}")
+	print("\n-----Output vector----\n")
+	for item in output_list:
+		print(f"{item}")
+
+# Example usage
+if __name__ == "__main__":
+	# Generate a sample input vector of Complex numbers (length must be a power of 2)
+	# x = [Complex(0.0, 0.0) for _ in range(8)]  # Example with zeros
+	# x[1] = Complex(1.0, 0.0)  # Adding a non-zero element
+	# x = input_vector # from part 1a
+	x = [0, 0.7071, 1, 0.7071, 0, -0.7071, -1, -0.7071] #part 3a
+	x_test  = []
+	for item in x:
+		x_test.append(Complex(item, 0))
+
+	# Compute FFT
+	X_fft = fft_iterative(x_test.copy())
+	display(x_test, X_fft)
+	# Print the FFT result
+
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+               <div class="listingblock">
+                  <div class="title">Result</div>
+                  <div class="content monospaced">
+                     <!-- MAKE CHANGES HERE: Part EC2 results -->
+                     <pre>// Insert your resulting vector here
+
+					-----Input vector----
+
+					0.0000 + 0.0000i
+					0.7071 + 0.0000i
+					1.0000 + 0.0000i
+					0.7071 + 0.0000i
+					0.0000 + 0.0000i
+					-0.7071 + 0.0000i
+					-1.0000 + 0.0000i
+					-0.7071 + 0.0000i
+
+					-----Output vector----
+
+					0.0000 + 0.0000i
+					0.0000 + -4.0000i
+					0.0000 + 0.0000i
+					0.0000 + 0.0000i
+					0.0000 + 0.0000i
+					-0.0000 + -0.0000i
+					0.0000 + 0.0000i
+					-0.0000 + 4.0000i
+					 </pre>
+                     <!-- END CHANGES -->
+                  </div>
+               </div>
+
+			  <br>
+			  <br>
+
+
+      <div id="footer">
+         <div id="footer-text">
+            Last updated 2024-03-07
+         </div>
+      </div>
+   </body>
+</html>

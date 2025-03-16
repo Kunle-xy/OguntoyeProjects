@@ -1,0 +1,58 @@
+import random
+image = cv.imread('image_part6a.png',  cv.IMREAD_GRAYSCALE)
+imageX  = cv.imread('image_part6a.png')
+image_rgb = cv.cvtColor(imageX, cv.COLOR_BGR2RGB)
+ret, image = cv.threshold(image, 230, 255, cv.THRESH_BINARY_INV)
+
+not_i = ['B', 'D', 'E', 'F', 'H', 'K', 'L', 'M', 'N', 'P', 'R', 'T']
+def removei(img, lists):
+  for lett in lists:
+    item = cv.imread(lett + '.PNG', cv.IMREAD_GRAYSCALE)
+    ret, kernel = cv.threshold(item, 100, 255, cv.THRESH_BINARY_INV)
+    erosion = cv.erode(image , kernel,  iterations=1)
+    new_se = cv.flip(kernel,-1)
+    dilate = cv.dilate(erosion, new_se,  iterations=1)
+    # print(np.unique(dilate))
+    img[dilate==255]= 0
+    # return img
+
+# kernel = kernel[5:35, 3:27]
+
+
+vowels = ['A', 'E','I', 'O', 'U']
+
+font = [1,2,3,4,7]
+font_scale = 1.2
+font_color = (255)  # White color
+thickness = 5
+
+for ix, lett in enumerate(vowels):
+  a = random.randint(0, 255)
+  b = random.randint(0, 255)
+  c = random.randint(0, 255)
+
+  item = cv.imread(lett + '.PNG', cv.IMREAD_GRAYSCALE)
+  ret, kernel = cv.threshold(item, 100, 255, cv.THRESH_BINARY_INV)
+  erosion = cv.erode(image , kernel, iterations=1)
+
+  new_se = cv.flip(kernel,-1)
+  dilation = cv.dilate(erosion, new_se)
+
+  if lett == 'I':
+    removei(dilation, not_i)
+    ker = cv.getStructuringElement(cv.MORPH_RECT, (7,1))
+    dilation = cv.dilate(cv.erode(dilation, ker, iterations=1), ker)
+    # print(np.unique(dilation))
+
+  # plt.imshow(dilation, cmap='gray')
+  # plt.axis('off')
+  # plt.show()
+
+  contours, _ = cv.findContours(dilation, cv.RETR_EXTERNAL,
+                                                  cv.CHAIN_APPROX_NONE)
+  for cnt in contours:
+      x, y, w, h = cv.boundingRect(cnt)
+      dilation[y:y + h, x:x + w] = 0
+      cv.putText(dilation, lett, (x, y+h), font[ix], font_scale, font_color, thickness)
+
+  image_rgb[dilation==255] = [a,b,c]

@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta name="generator" content="AsciiDoc 8.6.9">
+      <title>HCI/CprE/ComS 575: Homework #3</title>
+      <link rel="stylesheet" href="./riak.css" type="text/css">
+   </head>
+
+   <body class="article">
+      <div id="header">
+         <h1>HCI/CprE/ComS 575: Homework #3</h1>
+         <!-- MAKE CHANGES HERE: Student information -->
+         <span id="author">Kunle Oguntoye</span><br>
+         <span id="email" class="monospaced">&lt;
+         <a href="mailto:oguntoye@iastate.edu">oguntoye@iastate.edu</a>&gt;</span><br>
+         <!-- END CHANGES -->
+      </div>
+
+      <div id="content">
+
+	  <div id="preamble">
+				<div class="sectionbody">
+					<div class="paragraph">
+						<p>
+						For your output files to display in the HTML template, you will have to save/ convert them to  H.264 (*.mp4).
+						<br><br>
+						If you are having troubles with H.264, try downloading <a href="https://github.com/cisco/openh264/releases">this DLL</a> and placing it in the folder with the binary (I believe you need version 1.8).
+						<br>
+						Alternatively, you can install <a href="https://ffmpeg.org/">FFMPEG</a> and use it to convert your .avi files to .mp4 using the command below.
+
+						<div class="listingblock">
+						<div class="title">FFMPEG Command</div>
+						<div class="content">
+							<pre><h4><tt>ffmpeg -i input.m4v -c:a aac -b:a 128k -c:v libx264 -crf 23 output.mp4</tt></h4></pre>
+						</div>
+					</div>
+
+						<br><br>
+						<strong>Do not waste time on this.</strong>
+						<br><br>
+						If you are unable to get these formats working within a few minutes, you are free to pick a different format or to let OpenCV pick its default - .avi is common.
+						</p>
+					</div>
+					<div class="listingblock">
+						<div class="title">FOURCC codes</div>
+						<div class="content">
+							<!-- Generator: GNU source-highlight 3.1.8
+								by Lorenzo Bettini
+								http://www.lorenzobettini.it
+								http://www.gnu.org/software/src-highlite -->
+							<pre><h4><tt><span style="font-weight: bold"><span style="color: #000000">VideoWriter::fourcc('H','2','6','4')</span></span><span style="color: #9A1900">// For H.264</span></span>
+</span></tt></h4></pre>
+						</div>
+					</div>
+				</div>
+		</div>
+
+
+
+<!-- ---------------------------------- START PART 1a ---------------------------------- -->
+      <div class="sect1">
+         <h2 id="_part_1a">Part 1a</h2>
+         <div class="sectionbody">
+            <div class="paragraph">
+               <p>
+               Write a Matlab program to find all words in the provided static images and draw rectangles
+				around them. Save each result in a separate image file.
+				</p>
+            </div>
+            <table class="tableblock frame-all grid-all" style=" width:100%; ">
+               <col style="width:33%;">
+               <col style="width:33%;">
+			   <col style="width:34%;">
+               <tbody>
+                  <tr>
+                     <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock"><span class="image">
+							<img src="part1/p1_image1.png" alt="part1/p1_image1.png" width="100%" height="100%">
+							</span>
+                        </p>
+                     </td>
+                     <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock"><span class="image">
+							<img src="part1/p1_image2.png" alt="part1/p1_image2.png" width="100%" height="100%">
+							</span>
+                        </p>
+                     </td>
+					 <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock"><span class="image">
+							<img src="part1/p1_image3.png" alt="part1/p1_image3.png" width="100%" height="100%">
+							</span>
+                        </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock">
+                           <span class="image">
+                        <!-- MAKE CHANGES HERE: Part 1a image 1 -->
+                        <img src="part1/p1_image1_with_boxes.png" width="100%"  >
+                        <!-- END CHANGES -->
+                           </span>
+                        </p>
+                     </td>
+                     <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock">
+                           <span class="image">
+                        <!-- MAKE CHANGES HERE: Part 1a image 2 -->
+                        <img src="part1/p1_image2_with_boxes.png" width="100%"  >
+                        <!-- END CHANGES -->
+                           </span>
+                        </p>
+                     </td>
+					 <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock">
+                           <span class="image">
+                        <!-- MAKE CHANGES HERE: Part 1a image 3 -->
+                        <img src="part1/p1_image3_with_boxes.png" width="100%"  >
+                        <!-- END CHANGES -->
+                           </span>
+                        </p>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+            <div class="listingblock">
+               <div class="title">Source</div>
+               <div class="content monospaced">
+                  <!-- MAKE CHANGES HERE: Part 1a Matlab code -->
+                  <p>Note: change the file name to link your code</p>
+                  <div class="codetext">
+                     <object class="codeobject" type="text/html" data="part1/p1a_code.m"></object>
+                  </div>
+                  <!-- END CHANGES -->
+               </div>
+            </div>
+<!-- ----------------------------------- END PART 1a ----------------------------------- -->
+
+
+<!-- ---------------------------------- START PART 1b ---------------------------------- -->
+      <div class="sect1">
+         <h2 id="_part_1a">Part 1b</h2>
+         <div class="sectionbody">
+            <div class="paragraph">
+               <p>
+                  Do the same, but now use OpenCV.
+			   </p>
+            </div>
+            <table class="tableblock frame-all grid-all" style=" width:100%; ">
+               <col style="width:33%;">
+               <col style="width:33%;">
+			   <col style="width:34%;">
+               <tbody>
+                  <tr>
+                     <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock"><span class="image">
+							<img src="part1/p1_image1.png" alt="part1/p1_image1.png" width="100%" height="100%">
+							</span>
+                        </p>
+                     </td>
+                     <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock"><span class="image">
+							<img src="part1/p1_image2.png" alt="part1/p1_image2.png" width="100%" height="100%">
+							</span>
+                        </p>
+                     </td>
+					 <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock"><span class="image">
+							<img src="part1/p1_image3.png" alt="part1/p1_image3.png" width="100%" height="100%">
+							</span>
+                        </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock">
+                           <span class="image">
+                        <!-- MAKE CHANGES HERE: Part 1b image 1 -->
+                        <img src="part1/p1_image1_with_boxes.png" width="100%"  >
+                        <!-- END CHANGES -->
+                           </span>
+                        </p>
+                     </td>
+                     <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock">
+                           <span class="image">
+                        <!-- MAKE CHANGES HERE: Part 1b image 2 -->
+                        <img src="part1/p1_image2_with_boxes.png" width="100%"  >
+                        <!-- END CHANGES -->
+                           </span>
+                        </p>
+                     </td>
+					 <td class="tableblock halign-left valign-top" >
+                        <p class="tableblock">
+                           <span class="image">
+                        <!-- MAKE CHANGES HERE: Part 1b image 3 -->
+                        <img src="part1/p1_image3_with_boxes.png" width="100%"  >
+                        <!-- END CHANGES -->
+                           </span>
+                        </p>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+            <div class="listingblock">
+               <div class="title">Source</div>
+               <div class="content monospaced">
+                  <!-- MAKE CHANGES HERE: Part 1b OpenCV code -->
+                  <p>Note: change the file name to link your code</p>
+                  <div class="codetext">
+                     <object class="codeobject" type="text/html" data="part1/p1b_code.py"></object>
+                  </div>
+                  <!-- END CHANGES -->
+               </div>
+            </div>
+<!-- ----------------------------------- END PART 1b ----------------------------------- -->
+
+
+
+<!-- ---------------------------------- START PART 2a ---------------------------------- -->
+<div class="sect1">
+   <h2 id="_part_2a">Part 2a</h2>
+   <div class="sectionbody">
+      <div class="paragraph">
+         <p>
+			Write a Matlab program to detect the words in the selected/highlighted squares. Then overlay the image
+			with the coordinates of those grid squares, e.g., (1,4), (2,1), (2,4) and (3,3) for the first test image. Also, print the coordinates in plain text on the console.
+         </p>
+      </div>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <col style="width:33%;">
+         <col style="width:33%;">
+		 <col style="width:34%;">
+         <tbody>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+					<p class="tableblock"><span class="image">
+						<img src="part2/p2_image1.png" alt="part2/p2_image1.png" width="100%" height="100%">
+						</span>
+					</p>
+				 </td>
+               <td class="tableblock halign-left valign-top" >
+					<p class="tableblock"><span class="image">
+						<img src="part2/p2_image2.png" alt="part2/p2_image2.png" width="100%" height="100%">
+						</span>
+					</p>
+				 </td>
+				<td class="tableblock halign-left valign-top" >
+					<p class="tableblock"><span class="image">
+						<img src="part2/p2_image3.png" alt="part2/p3_image3.png" width="100%" height="100%">
+						</span>
+					</p>
+				 </td>
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+					<p class="tableblock">
+					   <span class="image">
+					<!-- MAKE CHANGES HERE: Part 2a image 1 -->
+					<img src="part2/p2_image1_with_text.png" width="100%"  >
+					<!-- END CHANGES -->
+					   </span>
+					</p>
+				 </td>
+               <td class="tableblock halign-left valign-top" >
+					<p class="tableblock">
+					   <span class="image">
+					<!-- MAKE CHANGES HERE: Part 2a image 2 -->
+					<img src="part2/p2_image2_with_text.png" width="100%"  >
+					<!-- END CHANGES -->
+					   </span>
+					</p>
+				 </td>
+				<td class="tableblock halign-left valign-top" >
+					<p class="tableblock">
+					   <span class="image">
+					<!-- MAKE CHANGES HERE: Part 2a image 3 -->
+					<img src="part2/p2_image3_with_text.png" width="100%"  >
+					<!-- END CHANGES -->
+					   </span>
+					</p>
+				 </td>
+            </tr>
+         </tbody>
+      </table>
+      <div class="listingblock">
+         <div class="title">Source</div>
+         <div class="content monospaced">
+            <!-- MAKE CHANGES HERE: Part 2a Matlab code -->
+            <p>Note: change the file name to link your code</p>
+            <div class="codetext">
+               <object class="codeobject" type="text/html" data="part2/p2a_code.m"></object>
+            </div>
+            <!-- END CHANGES -->
+         </div>
+      </div>
+<!-- ----------------------------------- END PART 2a ----------------------------------- -->
+
+<!-- ---------------------------------- START PART 2b ---------------------------------- -->
+<div class="sect1">
+   <h2 id="_part_2b">Part 2b</h2>
+   <div class="sectionbody">
+      <div class="paragraph">
+         <p>
+             Repeat the task from a), but now use OpenCV.
+		</p>
+      </div>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <col style="width:33%;">
+         <col style="width:33%;">
+		 <col style="width:34%;">
+         <tbody>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+					<p class="tableblock"><span class="image">
+						<img src="part2/p2_image1.png" alt="part2/p2_image1.png" width="100%" height="100%">
+						</span>
+					</p>
+				 </td>
+               <td class="tableblock halign-left valign-top" >
+					<p class="tableblock"><span class="image">
+						<img src="part2/p2_image2.png" alt="part2/p2_image2.png" width="100%" height="100%">
+						</span>
+					</p>
+				 </td>
+				<td class="tableblock halign-left valign-top" >
+					<p class="tableblock"><span class="image">
+						<img src="part2/p2_image3.png" alt="part2/p3_image3.png" width="100%" height="100%">
+						</span>
+					</p>
+				 </td>
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+					<p class="tableblock">
+					   <span class="image">
+					<!-- MAKE CHANGES HERE: Part 2b image 1 -->
+					<img src="part2/p2_image1_with_text.png" width="100%"  >
+					<!-- END CHANGES -->
+					   </span>
+					</p>
+				 </td>
+               <td class="tableblock halign-left valign-top" >
+					<p class="tableblock">
+					   <span class="image">
+					<!-- MAKE CHANGES HERE: Part 2b image 2 -->
+					<img src="part2/p2_image2_with_text.png" width="100%"  >
+					<!-- END CHANGES -->
+					   </span>
+					</p>
+				 </td>
+				<td class="tableblock halign-left valign-top" >
+					<p class="tableblock">
+					   <span class="image">
+					<!-- MAKE CHANGES HERE: Part 2b image 3 -->
+					<img src="part2/p2_image3_with_text.png" width="100%"  >
+					<!-- END CHANGES -->
+					   </span>
+					</p>
+				 </td>
+            </tr>
+         </tbody>
+      </table>
+      <div class="listingblock">
+         <div class="title">Source</div>
+         <div class="content monospaced">
+            <!-- MAKE CHANGES HERE: Part 2b OpenCV code -->
+            <p>Note: change the file name to link your code</p>
+            <div class="codetext">
+               <object class="codeobject" type="text/html" data="part2/p2b_code.py"></object>
+            </div>
+            <!-- END CHANGES -->
+         </div>
+      </div>
+<!-- ----------------------------------- END PART 2b ----------------------------------- -->
+
+
+
+<!-- ---------------------------------- START PART 3a ---------------------------------- -->
+<div class="sect1">
+   <h2 id="_part_3a">Part 3a</h2>
+   <div class="sectionbody">
+      <div class="paragraph">
+         <p>
+            Write a program that changes the highlight color for selected words from gray to blue before writing the result to the output video.
+
+              </p>
+      </div>
+      <BR>
+      First input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+
+              <source src="part3/p3a_video1.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 3a  -->
+                  <source src="part3/p3a_video1_today_matlab.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+      <BR>
+      Second input video.
+      <BR>
+       <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+
+              <source src="part3/p3a_video2.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 3a  -->
+                  <source src="part3/p3a_video2_today_matlab2.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+      <div class="listingblock">
+         <div class="title">Source</div>
+         <div class="content monospaced">
+            <!-- MAKE CHANGES HERE: Part 3a OpenCV code -->
+            <p>Note: change the file name to link your code</p>
+            <div class="codetext">
+               <object class="codeobject" type="text/html" data="part3/p3a_code.py"></object>
+            </div>
+            <!-- END CHANGES -->
+         </div>
+      </div>
+
+<!-- ----------------------------------- END PART 3a ----------------------------------- -->
+
+
+<!-- ---------------------------------- START PART 3b ---------------------------------- -->
+<div class="sect1">
+   <h2 id="_part_3b">Part 3b</h2>
+   <div class="sectionbody">
+      <div class="paragraph">
+         <p>
+			Write a program that detects when the purple group tile appears (light blue in the second input) and then changes all pixels with this color to light brown.
+
+                        Save your result as a new output video file.
+
+         </p>
+      </div>
+      <BR>
+      First input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part3/p3b_video1.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 3a  -->
+                  <source src="part3/p3b_video1_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+      <BR>
+      Second input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part3/p3b_video2.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 3a  -->
+                  <source src="part3/p3b_video2_result2.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+      <div class="listingblock">
+         <div class="title">Source</div>
+         <div class="content monospaced">
+            <!-- MAKE CHANGES HERE: Part 3b OpenCV code -->
+            <p>Note: change the file name to link your code</p>
+            <div class="codetext">
+               <object class="codeobject" type="text/html" data="part3/p3b_code.py"></object>
+            </div>
+            <!-- END CHANGES -->
+         </div>
+      </div>
+
+<!-- ----------------------------------- END PART 3b ----------------------------------- -->
+
+<!-- ---------------------------------- START PART 4a ---------------------------------- -->
+<div class="sect1">
+   <h2 id="_part_4a">Part 4a</h2>
+   <div class="sectionbody">
+      <div class="paragraph">
+         <p>
+            The game gives you four chances to solve the puzzle. Write a program that detects the number of remaining chances (gray circles) and augments the video frame with a red integer that is equal to that count. Save your result to a new output video.
+		   </p>
+      </div>
+
+      <BR>
+      First input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part4/p4a_video1.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 4a video 1  -->
+                  <source src="part4/p4a_video1_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+
+      <BR>
+      Second input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part4/p4a_video2.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 4a video 2  -->
+                  <source src="part4/p4a_video2_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+      <BR>
+      Third input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part4/p4a_video3.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 4a video 3  -->
+                  <source src="part4/p4a_video3_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+
+      <div class="listingblock">
+         <div class="title">Source</div>
+         <div class="content monospaced">
+            <!-- MAKE CHANGES HERE: Part 4a OpenCV code -->
+            <p>Note: change the file name to link your code</p>
+            <div class="codetext">
+               <object class="codeobject" type="text/html" data="part4/p4a_code.py"></object>
+            </div>
+            <!-- END CHANGES -->
+         </div>
+      </div>
+
+<!------------------------------------- END PART 4a ------------------------------------->
+
+<!------------------------------------ START PART 4b ------------------------------------>
+<div class="sect1">
+   <h2 id="_part_4b">Part 4b</h2>
+   <div class="sectionbody">
+      <div class="paragraph">
+         <p>
+            For each video below, print/overlay with text the color of the group block for each successful choice.
+   e.g. Blue, Yellow, Green, Purple.
+		</p>
+      </div>
+
+      <BR>
+      First input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part4/p4b_video1.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 4b video 1  -->
+                  <source src="part4/p4b_video1_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+
+      <BR>
+      Second input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part4/p4b_video2.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 4b video 2  -->
+                  <source src="part4/p4b_video2_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+      <BR>
+      Third input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part4/p4b_video3.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 4b video 3  -->
+                  <source src="part4/p4b_video3_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+      <div class="listingblock">
+         <div class="title">Source</div>
+         <div class="content monospaced">
+            <!-- MAKE CHANGES HERE: Part 4b OpenCV code -->
+            <p>Note: change the file name to link your code</p>
+            <div class="codetext">
+               <object class="codeobject" type="text/html" data="part4/p4b_code.py"></object>
+            </div>
+            <!-- END CHANGES -->
+         </div>
+      </div>
+
+<!-- ----------------------------------- END PART 4b ----------------------------------- -->
+
+<!-- ---------------------------------- START PART 5a ---------------------------------- -->
+<div class="sect1">
+   <h2 id="_part_5a">Part 5a</h2>
+   <div class="sectionbody">
+      <div class="paragraph">
+         <p>
+            Write a program that detects all movement in the input video and outputs the motion history as a new
+			video. That is, the output video must contain only the pixels that moved in the last T frames and their
+			color must reflect how recent was their movement (bright white most recent; dark gray most distant).
+		</p>
+      </div>
+
+      <BR>
+      First input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part5/p5a_video1.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 5a video 1  -->
+                  <source src="part5/p5a_video1_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+      <BR>
+      Second input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part5/p5a_video2.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 5a video 2  -->
+                  <source src="part5/p5a_video2_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+      <BR>
+      Third input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part5/p5a_video3.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 5a video 3  -->
+                  <source src="part5/p5a_video3_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+
+      <div class="listingblock">
+         <div class="title">Source</div>
+         <div class="content monospaced">
+            <!-- MAKE CHANGES HERE: Part 5a OpenCV code -->
+            <p>Note: change the file name to link your code</p>
+            <div class="codetext">
+               <object class="codeobject" type="text/html" data="part5/p5a_code.py"></object>
+            </div>
+            <!-- END CHANGES -->
+         </div>
+      </div>
+
+<!-- ----------------------------------- END PART 5a ----------------------------------- -->
+
+<!-- ---------------------------------- START PART 5b ---------------------------------- -->
+<div class="sect1">
+   <h2 id="_part_5b">Part 5b</h2>
+   <div class="sectionbody">
+      <div class="paragraph">
+         <p>
+            Write a program that tracks which selected squares moved and overlays the output video
+			with their trajectories. That is, plot a line that tracks the center of each grid as it moves on the screen.
+		</p>
+      </div>
+
+      <BR>
+      First input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part5/p5b_video1.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 5b video 1  -->
+                  <source src="part5/p5b_video1_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+
+      <BR>
+      Second input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part5/p5b_video2.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 5b video 2  -->
+                  <source src="part5/p5b_video2_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+      <BR>
+      Third input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="part5/p5b_video3.mp4" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part 5b video 3  -->
+                  <source src="part5/p5b_video3_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+      <div class="listingblock">
+         <div class="title">Source</div>
+         <div class="content monospaced">
+            <!-- MAKE CHANGES HERE: Part 5b OpenCV code -->
+            <p>Note: change the file name to link your code</p>
+            <div class="codetext">
+               <object class="codeobject" type="text/html" data="part5/p5b_code.py"></object>
+            </div>
+            <!-- END CHANGES -->
+         </div>
+      </div>
+
+<!-- ----------------------------------- END PART 5b ----------------------------------- -->
+
+<!-- ---------------------------------- START PART EC ---------------------------------- -->
+<div class="sect1">
+   <h2 id="_part_ec1">Extra Credit 1</h2>
+   <div class="sectionbody">
+      <div class="paragraph">
+         <p>
+			Use your favorite screen capture program to record two short video clips of you playing your favorite game (you can pick something from  https://www.247games.com/ if you a not a gamer). Then write a program that tracks something based on color and movement detection. Save the result as a separate video.
+		   </p>
+      </div>
+
+      <BR>
+      First input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="partEC/ec_video1.m4v" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part EC video 1  -->
+                  <source src="partEC/ec_result1.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+
+      <BR>
+      Second input video.
+      <BR>
+      <table class="tableblock frame-all grid-all" style=" width:100%; ">
+         <tbody>
+
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock"><span class="video">
+              <video width="100%" controls>
+               <source src="partEC/ec_video2.m4v" type="video/mp4">
+               Your browser does not support HTML5 video.
+              </video>
+              </span>
+                  </p>
+               </td>
+
+            </tr>
+            <tr>
+               <td class="tableblock halign-left valign-top" >
+                  <p class="tableblock">
+                     <span class="image">
+                       <video width="100%" controls>
+                  <!-- MAKE CHANGES HERE: Part EC video 2  -->
+                  <source src="partEC/ec_result2.mp4" type="video/mp4">
+                  <!-- END CHANGES -->
+                  Your browser does not support HTML5 video.
+                </video>
+                     </span>
+                  </p>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+
+
+      <div class="listingblock">
+         <div class="title">Source</div>
+         <div class="content monospaced">
+            <!-- MAKE CHANGES HERE: Part EC OpenCV code -->
+            <p>Note: change the file name to link your code</p>
+            <div class="codetext">
+               <object class="codeobject" type="text/html" data="partEC/ec_code.cpp"></object>
+            </div>
+            <!-- END CHANGES -->
+         </div>
+      </div>
+
+<!-- ----------------------------------- END PART EC ----------------------------------- -->
+
+
+
+
+
+      <div id="footer">
+         <div id="footer-text">
+            Last updated 2024-02-20
+         </div>
+      </div>
+   </body>
+</html>

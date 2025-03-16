@@ -1,0 +1,2 @@
+// Insert your code in partEC2/ec2_code.m  or  partEC2/ec2_code.cpp
+// Edit the file extension in the HTML template to match your programming language.

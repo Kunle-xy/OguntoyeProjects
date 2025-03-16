@@ -1,0 +1,64 @@
+
+
+import random
+image = cv.imread('image_part5a.png',  cv.IMREAD_GRAYSCALE)
+imageX  = cv.imread('image_part5a.png')
+image_rgb = cv.cvtColor(imageX, cv.COLOR_BGR2RGB)
+
+not_i = ['B', 'D', 'E', 'F', 'H', 'K', 'L', 'M', 'N', 'P', 'R', 'T']
+def removei(img, lists):
+  for lett in lists:
+    item = cv.imread(lett + '.PNG', cv.IMREAD_GRAYSCALE)
+    ret, kernel = cv.threshold(item, 100, 255, cv.THRESH_BINARY_INV)
+    erosion = cv.erode(image , kernel)
+    new_se = cv.flip(kernel,-1)
+    dilation = cv.dilate(erosion, new_se)
+    img[dilation==255]= [0,0,0]
+
+def addLetter(img, lists, color):
+  for lett in lists:
+    item = cv.imread(lett + '.PNG', cv.IMREAD_GRAYSCALE)
+    ret, kernel = cv.threshold(item, 100, 255, cv.THRESH_BINARY_INV)
+    erosion = cv.erode(image , kernel)
+    new_se = cv.flip(kernel,-1)
+    dilation = cv.dilate(erosion, new_se)
+    img[dilation==255]= [color[0], color[1], color[2]]
+
+#detect I
+# import pytesseract
+# pytesseract.pytesseract.tesseract_cmd = 'System_path_to_tesseract.exe'
+
+# kernel = kernel[5:35, 3:27]
+ret, image = cv.threshold(image, 230, 255, cv.THRESH_BINARY_INV)
+
+vowels = ['A', 'E', 'I', 'O', 'U', 'Y']
+
+# vowels = ['E']
+
+for lett in vowels:
+  a = random.randint(0, 255)
+  b = random.randint(0, 255)
+  c = random.randint(0, 255)
+
+  item = cv.imread(lett + '.PNG', cv.IMREAD_GRAYSCALE)
+  ret, kernel = cv.threshold(item, 100, 255, cv.THRESH_BINARY_INV)
+
+  plt.imshow(kernel, cmap='gray')
+  erosion = cv.erode(image , kernel)
+
+  new_se = cv.flip(kernel,-1)
+  dilation = cv.dilate(erosion, new_se)
+
+  image_rgb[dilation==255]= [a, b, c]
+  plt.imshow(dilation, cmap='gray')
+
+
+removei(image_rgb, not_i)
+a = random.randint(0, 255)
+b = random.randint(0, 255)
+c = random.randint(0, 255)
+addLetter(image_rgb, 'E', (a,b,c))
+
+plt.imshow(image_rgb, cmap='gray')
+plt.axis('off')
+plt.savefig("image_part5a.jpg", bbox_inches='tight')
