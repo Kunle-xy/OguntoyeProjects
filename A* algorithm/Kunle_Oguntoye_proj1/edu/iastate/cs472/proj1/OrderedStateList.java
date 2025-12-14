@@ -4,18 +4,13 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- *  
- * @author
- *
- */
-
-/**
  * This class describes a circular doubly-linked list of states to represent both the OPEN and CLOSED lists
- * used by the A* algorithm.  The states on the list are sorted in the  
- * 
- *     a) order of non-decreasing cost estimate for the state if the list is OPEN, or 
- *     b) lexicographic order of the state if the list is CLOSED.  
- * 
+ * used by the A* algorithm.  The states on the list are sorted in the
+ *
+ *     a) order of non-decreasing cost estimate for the state if the list is OPEN, or
+ *     b) lexicographic order of the state if the list is CLOSED.
+ *
+ * @author Kunle Oguntoye
  */
 public class OrderedStateList 
 {
