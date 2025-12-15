@@ -46,6 +46,12 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
 
     @Override
     public CheckersMove makeMove(CheckersMove[] legalMoves) {
+        // Debug output
+        System.out.println("\n=== MCTS makeMove called ===");
+        System.out.println("Simulation limit: " + simulationLimit);
+        System.out.println("Exploration constant: " + explorationConstant);
+        System.out.println("Legal moves available: " + (legalMoves != null ? legalMoves.length : 0));
+        
         // Create the root node with the current board state
         MCNode<CheckersMove> root = new MCNode<>(null, null, board, explorationConstant);
 
@@ -57,11 +63,19 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
             backpropagation(expandedNode, simulationResult);
         }
 
+        // Debug: Print root statistics
+        System.out.println("Root visits after " + simulationLimit + " iterations: " + root.getVisits());
+        
         // Select the best child node based on visit count (exploration)
         MCNode<CheckersMove> bestChild = root.getBestChildByVisits();
+        
         if (bestChild == null || bestChild.getMove() == null) {
+            System.out.println("WARNING: No best child found! Using fallback move.");
+            System.out.println("Best child is null: " + (bestChild == null));
             return legalMoves[0]; // Fallback to the first legal move if no move is found
         } else {
+            System.out.println("Best child selected with " + bestChild.getVisits() + " visits");
+            System.out.println("Move: " + bestChild.getMove());
             return bestChild.getMove();
         }
     }
