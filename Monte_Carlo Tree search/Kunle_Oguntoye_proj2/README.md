@@ -2,6 +2,8 @@
 
 A Java implementation of Monte Carlo Tree Search (MCTS) to create an intelligent AI player for the game of Checkers.
 
+![Checkers Game](edu/iastate/cs572/proj2/CHECKERS.png)
+
 ## Overview
 
 This project implements an AI opponent for checkers using Monte Carlo Tree Search, a powerful decision-making algorithm that combines random sampling with tree search. The AI can play strategically by simulating thousands of random game outcomes to determine the best move.
