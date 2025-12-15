@@ -199,9 +199,9 @@ Depth 10: Material disadvantage
 
 Minimax computes the **minimax value** under the assumption of optimal play by both sides:
 
-$$V^*(s) = \begin{cases}
-\max_{a} V^*(\text{Result}(s,a)) & \text{MAX's turn} \\
-\min_{a} V^*(\text{Result}(s,a)) & \text{MIN's turn}
+$$V^{\*}(s) = \begin{cases}
+\max_{a} V^{\*}(\text{Result}(s,a)) & \text{MAX's turn} \\
+\min_{a} V^{\*}(\text{Result}(s,a)) & \text{MIN's turn}
 \end{cases}$$
 
 This assumes the opponent always chooses the move that minimizes your score. But real opponents:
