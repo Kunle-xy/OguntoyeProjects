@@ -31,82 +31,274 @@ Monte Carlo Tree Search (MCTS) is a smart way to make decisions in games. Instea
 
 Traditional game AI uses an algorithm called **Minimax**. It sounds good in theory, but has some serious problems for games like Checkers.
 
-### The Minimax Idea
+### The Minimax Algorithm Explained
 
-Minimax tries to look ahead and assume both players play perfectly:
-- **You** try to maximize your score (MAX player)
-- **Your opponent** tries to minimize your score (MIN player)
-- The algorithm calculates the "best guaranteed outcome"
+Minimax is a recursive algorithm that explores the game tree by assuming both players play optimally. The core principle is:
 
-### The Problems
+**Minimax Value Function:**
 
-#### Problem 1: The Explosion of Possibilities
+$$V(s) = \begin{cases}
+\text{utility}(s) & \text{if } s \text{ is terminal} \\
+\max_{a \in Actions(s)} V(\text{Result}(s, a)) & \text{if player is MAX} \\
+\min_{a \in Actions(s)} V(\text{Result}(s, a)) & \text{if player is MIN}
+\end{cases}$$
 
-Let's say Checkers has about 10 legal moves per turn on average. If we want to look ahead:
+Where:
+- $V(s)$ = the minimax value of state $s$
+- $\text{utility}(s)$ = the game outcome (win/loss/draw) at terminal state
+- $\text{Actions}(s)$ = set of legal moves from state $s$
+- $\text{Result}(s, a)$ = resulting state after taking action $a$ from state $s$
 
-- **4 moves ahead:** $10^4 = 10,000$ positions to check
-- **6 moves ahead:** $10^6 = 1,000,000$ positions
-- **8 moves ahead:** $10^8 = 100,000,000$ positions
-- **Complete game:** About $10^{20}$ positions *(impossible!)*
+**The Process:**
+1. **MAX player** (you) tries to maximize the score: $\max(V_1, V_2, \ldots, V_n)$
+2. **MIN player** (opponent) tries to minimize your score: $\min(V_1, V_2, \ldots, V_n)$
+3. The algorithm recursively alternates between MAX and MIN layers
+4. Returns the "best guaranteed outcome" assuming perfect play
 
-Even with clever shortcuts (Alpha-Beta pruning), we can only search **6-8 moves deep**. Many important tactics happen deeper than that!
+**Alpha-Beta Pruning Enhancement:**
 
-#### Problem 2: The Heuristic Nightmare
+To speed up Minimax, Alpha-Beta pruning eliminates branches that cannot affect the final decision:
 
-Since we can't search the entire game, Minimax needs a **heuristic function** - a formula that guesses how good a position is:
+$$\alpha = \max(\alpha, v) \quad \text{(MAX's best option)}$$
+$$\beta = \min(\beta, v) \quad \text{(MIN's best option)}$$
 
-$$\text{Score} = 3 \times (\text{pieces}) + 5 \times (\text{kings}) + 0.5 \times (\text{mobility}) + \ldots$$
+Prune when: $\beta \leq \alpha$ (the opponent won't allow this branch)
 
-**The trouble is:**
-- How do we know the right weights? (3 for pieces, 5 for kings, etc.)
-- What features should we include?
-- Different positions need different evaluations
-- We need expert knowledge to design a good formula
+In the best case, Alpha-Beta reduces complexity from $O(b^d)$ to $O(b^{d/2})$, effectively doubling the search depth. However, even with this improvement, Minimax faces fundamental limitations.
 
-If your heuristic is wrong, **your AI plays badly** - garbage in, garbage out!
+---
+
+### The Four Critical Pitfalls
+
+#### Problem 1: Combinatorial Explosion
+
+The branching factor $b$ and search depth $d$ create exponential growth in the number of states to evaluate.
+
+**State Space Complexity:**
+
+$$\text{States to evaluate} = b^d$$
+
+For Checkers with average branching factor $b \approx 10$:
+
+| Depth $d$ | States | Notation | Feasibility |
+|-----------|--------|----------|-------------|
+| 4 | $10^4$ | 10,000 | ✅ Trivial |
+| 6 | $10^6$ | 1 million | ✅ Fast |
+| 8 | $10^8$ | 100 million | ⚠️ Slow |
+| 10 | $10^{10}$ | 10 billion | ❌ Impractical |
+| 12 | $10^{12}$ | 1 trillion | ❌ Impossible |
+| Full game | $\approx 10^{20}$ | 100 quintillion | ❌ Impossible |
+
+**With Alpha-Beta pruning:** Best case reduces to $O(b^{d/2})$, but this requires perfect move ordering.
+
+$$\text{Best case: } b^{d/2} \quad \text{(e.g., } 10^4 \text{ instead of } 10^8 \text{ for } d=8)$$
+
+**The fundamental issue:** Even at depth 8, we only see 4 moves ahead for each player. Critical tactics in Checkers (multi-jump sequences, king endgames) often require 15+ moves of foresight.
+
+---
+
+#### Problem 2: The Heuristic Function Dependency
+
+#### Problem 2: The Heuristic Function Dependency
+
+Since exhaustive search is impossible, Minimax requires an **evaluation function** $h(s)$ to estimate the value of non-terminal states:
+
+$$h(s) = w_1 f_1(s) + w_2 f_2(s) + \cdots + w_n f_n(s)$$
+
+**Common Checkers heuristic:**
+
+$$h(s) = w_p \cdot P + w_k \cdot K + w_m \cdot M + w_c \cdot C + w_t \cdot T$$
+
+Where:
+- $P$ = piece count difference (your pieces - opponent pieces)
+- $K$ = king count difference (your kings - opponent kings)
+- $M$ = mobility (number of legal moves available)
+- $C$ = center control (pieces occupying central squares)
+- $T$ = threat count (pieces under attack)
+- $w_p, w_k, w_m, w_c, w_t$ = weight coefficients
+
+**Example values:** $w_p = 3, w_k = 5, w_m = 0.5, w_c = 1, w_t = -2$
+
+**The fundamental problems:**
+
+1. **Weight Tuning:** How do we determine optimal weights? Trial and error? Machine learning? Expert intuition?
+   
+2. **Feature Selection:** What features matter? Should we include:
+   - Back row protection? ($w_b \cdot B$)
+   - Diagonal control? ($w_d \cdot D$)
+   - Piece advancement? ($w_a \cdot A$)
+   - The list grows complex very quickly!
+
+3. **Position-Dependent Evaluation:** The same piece configuration has different values in different contexts:
+   - Opening: Mobility matters more
+   - Midgame: Material balance dominates  
+   - Endgame: King positioning is critical
+   
+   A single linear function cannot capture this complexity.
+
+4. **Garbage In, Garbage Out:** If $h(s)$ misvalues positions, Minimax makes bad decisions:
+   
+   $$\text{Minimax}(\text{bad heuristic}) \Rightarrow \text{suboptimal play}$$
+
+**MCTS advantage:** No heuristic needed! Game outcomes speak for themselves through simulations.
 
 #### Problem 3: The Horizon Effect
 
-Minimax searches to a fixed depth and stops. But what if something important happens just beyond that depth?
+Minimax searches to a fixed depth $d$ and evaluates leaf nodes with $h(s)$. But important tactics often occur at depth $d+1$ or beyond.
+
+**Mathematical formulation:**
+
+At depth $d$, Minimax sees state $s_d$ and evaluates $h(s_d)$. But the true value depends on subsequent moves:
+
+$$V_{\text{true}}(s_d) = \text{outcome at } s_{d+k} \quad (k > 0)$$
+
+If $h(s_d) \neq V_{\text{true}}(s_d)$, Minimax makes incorrect decisions.
+
+**Concrete example:**
 
 ```
-Move 5: Everything looks fine
-Move 6: (Search stops here - position looks safe)
-Move 7: Opponent threatens your piece! (We never saw this!)
-Move 8: You lose a piece trying to defend
+Depth 0: Your turn, multiple moves available
+Depth 1: Opponent responds  
+Depth 2: Your turn
+Depth 3: Opponent responds
+Depth 4: Your turn
+Depth 5: Opponent responds
+Depth 6: Your turn (SEARCH STOPS HERE - h(s) evaluates as "safe position")
+------ HORIZON ------
+Depth 7: Opponent discovers forcing sequence!
+Depth 8: You must respond (only 1 legal move)
+Depth 9: Opponent captures your piece
+Depth 10: Material disadvantage
 ```
 
-This is called the **horizon effect** - critical tactics happening just beyond where you can see.
+**The illusion:** At depth 6, $h(s_6) = +2.5$ (looks good!)  
+**The reality:** At depth 10, $V(s_{10}) = -3.0$ (actually losing!)
 
-#### Problem 4: Perfect Play Assumption
+**Why it happens:**
+- Forcing moves (checks, threats, captures) often require 8-12 move sequences
+- Quiet positions at the horizon mask upcoming tactical explosions
+- The evaluation function cannot predict future complications
 
-Minimax assumes your opponent never makes mistakes. But:
-- Real opponents **do** make mistakes
-- Some moves **create complexity** to confuse opponents
-- Traps and sacrifices can work against humans
+**Attempted solutions:**
+1. **Quiescence Search:** Continue searching "unstable" positions (captures, checks)
+   - Problem: How do you define "unstable"? You might miss quiet but deadly moves.
 
-Minimax can't set traps or adapt to opponent skill - it always assumes perfection.
+2. **Iterative Deepening:** Gradually increase depth
+   - Problem: Doesn't solve the fundamental issue, just moves the horizon deeper
+
+3. **Selective Extensions:** Search critical lines deeper
+   - Problem: How do you know which lines are critical before searching them?
+
+**MCTS advantage:** Simulations naturally play through the horizon! No artificial cutoff depth.
+
+---
+
+#### Problem 4: The Perfect Play Assumption
+
+#### Problem 4: The Perfect Play Assumption
+
+Minimax computes the **minimax value** under the assumption of optimal play by both sides:
+
+$$V^*(s) = \begin{cases}
+\max_{a} V^*(\text{Result}(s,a)) & \text{MAX's turn} \\
+\min_{a} V^*(\text{Result}(s,a)) & \text{MIN's turn}
+\end{cases}$$
+
+This assumes the opponent always chooses the move that minimizes your score. But real opponents:
+
+1. **Make mistakes** - Don't always see the best move
+2. **Have varying skill levels** - Beginners vs experts play differently  
+3. **Can be confused** - Complex positions lead to errors
+4. **Face time pressure** - Limited thinking time causes blunders
+
+**The trap paradox:**
+
+Consider a position where:
+- Move A: Safe, leads to small advantage (+1.5)
+- Move B: Risky sacrifice, leads to:
+  - +5.0 if opponent makes the obvious (but wrong) response  
+  - -2.0 if opponent finds the hidden defensive move
+
+$$V_{\text{Minimax}}(\text{Move B}) = -2.0 \quad \text{(assumes perfect defense)}$$
+$$V_{\text{Minimax}}(\text{Move A}) = +1.5 \quad \text{(safe)}$$
+
+**Minimax chooses A** (safe move with +1.5)
+
+But against a **human opponent** who makes mistakes 30% of the time:
+
+$$V_{\text{Expected}}(\text{Move B}) = 0.7 \times (-2.0) + 0.3 \times (+5.0) = +0.1$$
+
+Still chooses A, **missing the psychological advantage!**
+
+**Against a beginner** (60% mistake rate):
+
+$$V_{\text{Expected}}(\text{Move B}) = 0.4 \times (-2.0) + 0.6 \times (+5.0) = +2.2$$
+
+**Now B is better!** But Minimax will never consider it.
+
+**Additional issues:**
+- Cannot adapt strategy based on opponent strength
+- Cannot set traps or create complexity
+- Plays the same against beginners and grandmasters
+- Misses opportunities to exploit opponent weaknesses
+
+**MCTS advantage:** Through many random simulations, MCTS naturally discovers moves that create practical chances, not just theoretically optimal moves.
+
+---
+
+### Summary: Why Minimax Falls Short
+
+| Issue | Minimax Problem | MCTS Solution |
+|-------|----------------|---------------|
+| **Branching** | $O(b^d)$ explosion, limited depth | Focuses on promising branches |
+| **Evaluation** | Requires handcrafted $h(s)$ | Uses actual game outcomes |
+| **Horizon** | Fixed depth cutoff | Simulations play to completion |
+| **Adaptivity** | Assumes perfection | Discovers practical moves |
+| **Scalability** | Stuck at depth 6-8 | Improves with more time |
+
+**The fundamental insight:** When you can't search everything, don't try to evaluate positions with guesswork. Instead, simulate many complete games and let the statistics guide you.
 
 ---
 
 ## The Four Pillars of MCTS
 
-MCTS solves these problems with four simple steps, repeated over and over:
+MCTS solves the Minimax problems through four iterative phases that balance exploration and exploitation:
 
 ```
-┌─────────────────────────────────────┐
-│  Repeat 50 times (or 150 for Hard) │
-└─────────────────────────────────────┘
+┌─────────────────────────────────────────────────┐
+│  Repeat N times (20/50/150 for Easy/Med/Hard)  │
+└─────────────────────────────────────────────────┘
         │
         ↓
-   1. SELECTION
-   2. EXPANSION  
-   3. SIMULATION
-   4. BACKPROPAGATION
+   1. SELECTION    → Navigate tree using UCT
+   2. EXPANSION    → Add one new node
+   3. SIMULATION   → Play random game
+   4. BACKPROPAGATION → Update statistics
         │
         ↓
-   Choose best move
+   Choose move with most visits
 ```
+
+### Algorithm Overview
+
+**MCTS Pseudocode:**
+
+```
+function MCTS(root_state, iterations):
+    root = create_node(root_state)
+    
+    for i = 1 to iterations:
+        node = SELECT(root)           # Pillar 1
+        child = EXPAND(node)          # Pillar 2  
+        reward = SIMULATE(child)      # Pillar 3
+        BACKPROPAGATE(child, reward)  # Pillar 4
+    
+    return best_child(root)           # Most visited
+```
+
+**Key difference from Minimax:** Instead of exhaustively searching to depth $d$, MCTS adaptively explores the tree, spending more time on promising branches.
+
+
 
 Let's understand each pillar:
 
@@ -114,116 +306,430 @@ Let's understand each pillar:
 
 ### Pillar 1: SELECTION - Navigate to Promising Areas
 
-**What it does:** Walks through the tree of moves you've explored before, choosing the most promising path.
+**Objective:** Traverse the tree from root to a leaf node, balancing exploration of new moves with exploitation of known good moves.
 
-**How it chooses:** Uses the **UCT formula** to balance two things:
+**The UCT Formula (Upper Confidence Bound for Trees):**
 
-$$\text{UCT} = \underbrace{\frac{\text{wins}}{\text{visits}}}_{\text{Exploitation}} + \underbrace{c \times \sqrt{\frac{\ln(\text{parent visits})}{\text{visits}}}}_{\text{Exploration}}$$
+$$\text{UCT}(v) = \frac{Q(v)}{N(v)} + c \sqrt{\frac{\ln N(\text{parent}(v))}{N(v)}}$$
 
-- **Exploitation part:** Choose moves that have won before
-- **Exploration part:** Also try moves we haven't explored much
-- **$c$:** Controls how adventurous we are (Easy: 1.4, Medium: 2.2, Hard: 3.0)
+Where:
+- $Q(v)$ = total reward accumulated at node $v$ (sum of all simulation rewards)
+- $N(v)$ = number of times node $v$ has been visited
+- $N(\text{parent}(v))$ = visit count of parent node
+- $c$ = exploration constant (controls exploration vs exploitation trade-off)
 
-**Example:**
+**Breaking down the formula:**
+
+$$\underbrace{\frac{Q(v)}{N(v)}}_{\text{Exploitation term}} + \underbrace{c \sqrt{\frac{\ln N(\text{parent}(v))}{N(v)}}}_{\text{Exploration bonus}}$$
+
+1. **Exploitation term:** $\frac{Q(v)}{N(v)}$ = average reward (win rate)
+   - Higher win rate → More attractive
+   - Range: $[0, 1]$ for our implementation
+
+2. **Exploration bonus:** $c \sqrt{\frac{\ln N(\text{parent}(v))}{N(v)}}$
+   - Increases for rarely-visited nodes (small $N(v)$)
+   - Increases as parent gets visited more (large $\ln N(\text{parent})$)
+   - Controlled by $c$: larger $c$ → more exploration
+
+**Difficulty-specific exploration constants:**
+
+| Difficulty | $c$ value | Behavior |
+|-----------|-----------|----------|
+| Easy | $c = \sqrt{2} \approx 1.414$ | Moderate exploration |
+| Medium | $c = \sqrt{5} \approx 2.236$ | Balanced |
+| Hard | $c = 3.0$ | Aggressive exploration |
+
+**Selection algorithm:**
+
 ```
-Move A: 15 wins out of 20 tries (75% win rate, well explored)
-Move B: 3 wins out of 4 tries (75% win rate, barely explored)
-
-UCT gives Move B a bonus for being unexplored!
-→ Might pick B to learn more about it
+function SELECT(node):
+    while node is not terminal:
+        if node has unexpanded children:
+            return node
+        else:
+            node = child with highest UCT value
+    return node
 ```
 
-**In plain English:** Follow the path that's either **winning a lot** or **hasn't been tried much yet**.
+**Concrete example:**
+
+Consider a node with 3 children after 25 parent visits:
+
+| Child | $Q(v)$ | $N(v)$ | $\frac{Q(v)}{N(v)}$ | $\sqrt{\frac{\ln 25}{N(v)}}$ | $\text{UCT}$ (c=2.236) |
+|-------|--------|--------|---------------------|------------------------------|------------------------|
+| A | 15 | 12 | 1.25 | 0.519 | **2.41** |
+| B | 8 | 10 | 0.80 | 0.571 | 2.08 |
+| C | 2 | 3 | 0.67 | 1.041 | **2.99** ← Selected! |
+
+**Child C wins!** Despite having lower win rate (67% vs 104% for A), the exploration bonus is large enough because $N(C) = 3$ is small.
+
+**Mathematical insight:** As $N(v) \to \infty$, the exploration term $\sqrt{\frac{\ln N_p}{N(v)}} \to 0$, so UCT converges to pure exploitation (win rate).
+
+**The Chernoff-Hoeffding bound connection:**
+
+UCT is derived from the **Hoeffding inequality**, which bounds the probability that the empirical mean deviates from the true mean:
+
+$$P\left(\left|\frac{Q(v)}{N(v)} - \mu\right| \geq \epsilon\right) \leq 2e^{-2N(v)\epsilon^2}$$
+
+The exploration term ensures we don't miss a potentially good move due to insufficient sampling!
+
+
 
 ---
 
 ### Pillar 2: EXPANSION - Add One New Possibility
 
-**What it does:** When you reach the edge of what you've explored, add ONE new move to investigate.
+**Objective:** Grow the search tree incrementally by adding one unexplored child node.
 
-**Why only one?** This is clever:
-- Good moves get expanded more (they're visited more often)
-- Bad moves might never get fully expanded (saves time!)
-- The tree grows naturally toward winning strategies
+**Expansion strategy:**
 
-**Example:**
 ```
-Iteration 5: Reach Move A → Add Response X
-Iteration 8: Reach Move A again → Add Response Y  
-Iteration 12: Reach Move B → Add Response Z
-Iteration 15: Back to Move A → Add Response W
-
-See? Move A getting explored more because it's promising!
+function EXPAND(node):
+    if node is terminal:
+        return node
+    
+    unexpanded = get_legal_moves(node) - expanded_children(node)
+    
+    if unexpanded is empty:
+        return SELECT(node)  # All children expanded, continue selection
+    
+    move = randomly_choose(unexpanded)
+    child = create_child_node(node, move)
+    return child
 ```
 
-**In plain English:** Each time you think, explore ONE new possibility. Good paths naturally get explored deeper.
+**Why expand only one node per iteration?**
+
+This is a key insight of MCTS! By expanding incrementally:
+
+1. **Adaptive growth:** Good branches naturally get more attention
+2. **Efficiency:** Don't waste time expanding bad moves
+3. **Anytime algorithm:** Can stop at any iteration and return best move so far
+
+**Mathematical justification:**
+
+Let $b$ = branching factor. After $n$ iterations:
+
+- **Minimax with Alpha-Beta:** Tries to expand all $b^d$ nodes to depth $d$
+  $$\text{Nodes} = b + b^2 + \cdots + b^d = \frac{b^{d+1} - 1}{b - 1} = O(b^d)$$
+
+- **MCTS:** Expands at most $n$ nodes total (one per iteration)
+  $$\text{Nodes} \leq n$$
+
+But MCTS focuses these $n$ expansions on promising paths! 
+
+**Example growth pattern:**
+
+```
+Iteration 1:  Root (1 visit)
+              └─ A (1 visit)
+
+Iteration 5:  Root (5 visits)
+              ├─ A (3 visits) ← Getting expanded more
+              │  ├─ A1 (1 visit)
+              │  └─ A2 (1 visit)
+              └─ B (1 visit)
+
+Iteration 20: Root (20 visits)
+              ├─ A (12 visits) ← Dominant branch
+              │  ├─ A1 (5 visits)
+              │  │  ├─ A1a (2 visits)
+              │  │  └─ A1b (2 visits)
+              │  ├─ A2 (4 visits)
+              │  └─ A3 (2 visits)
+              ├─ B (6 visits)
+              │  ├─ B1 (3 visits)
+              │  └─ B2 (2 visits)
+              └─ C (1 visit) ← Bad move, rarely expanded
+```
+
+Notice: The tree grows **asymmetrically** toward promising moves!
+
+**Expansion order invariance:**
+
+The order in which unexpanded children are selected doesn't significantly affect convergence, because:
+
+$$\lim_{n \to \infty} \frac{Q(v)}{N(v)} \to E[\text{reward}(v)]$$
+
+All moves eventually get sampled enough to estimate their true value (by the **Law of Large Numbers**).
+
+
 
 ---
 
 ### Pillar 3: SIMULATION - Play It Out
 
-**What it does:** From the new move you just added, play a complete random game and see who wins.
+**Objective:** Estimate the value of a newly expanded node by playing a complete random game (rollout/playout).
 
-**The process:**
-1. Make random moves for both players
-2. Continue until someone wins OR 20 moves pass
-3. Score the result:
-   - AI wins: **1.0** points
-   - Tie or unclear: **0.5** points  
-   - AI loses: **0.0** points
+**Simulation algorithm:**
 
-**Wait, random moves? How does that help?**
-
-Great question! Here's the magic:
-
-- Good positions win more random games than bad positions
-- After many simulations, the **win rate** tells us which moves are better
-- We don't need expert knowledge - just play games and count wins!
-
-**Example:**
 ```
-Position A: Wins 80% of random games → Excellent position!
-Position B: Wins 50% of random games → Equal position
-Position C: Wins 20% of random games → Bad position!
-
-The ranking is correct even with random play!
+function SIMULATE(node):
+    state = node.game_state
+    depth = 0
+    MAX_DEPTH = 20  # Prevent infinite games
+    
+    while not is_terminal(state) and depth < MAX_DEPTH:
+        moves = get_legal_moves(state)
+        move = random_choice(moves)
+        state = apply_move(state, move)
+        depth++
+    
+    return evaluate_outcome(state, original_player)
 ```
 
-**In plain English:** Play out the game randomly to see if this move leads to winning positions. Do this many times, and the statistics don't lie.
+**Reward structure:**
+
+$$R(s) = \begin{cases}
+1.0 & \text{if AI wins} \\
+0.5 & \text{if draw or depth limit reached} \\
+0.0 & \text{if AI loses}
+\end{cases}$$
+
+**Why random playouts work:**
+
+This seems counterintuitive! How can **random** moves provide meaningful information?
+
+**The statistical answer:**
+
+Let $s$ be a game state, and $V(s)$ be its true value (probability AI wins from $s$ with optimal play). Let $\hat{V}_n(s)$ be the estimated value after $n$ random simulations.
+
+**Law of Large Numbers:**
+
+$$\lim_{n \to \infty} \hat{V}_n(s) = E[R | s] = p_{\text{win}}(s)$$
+
+Where $p_{\text{win}}(s)$ is the probability of winning from $s$ under random play.
+
+**Key insight:** While $p_{\text{win}}(s) \neq V(s)$ (random play ≠ optimal play), the ranking is often preserved:
+
+$$V(s_1) > V(s_2) \Rightarrow p_{\text{win}}(s_1) > p_{\text{win}}(s_2)$$
+
+**Empirical evidence:**
+
+```
+Position A: Strong tactical advantage
+  - Random playouts: Wins 78% of games
+  
+Position B: Balanced position  
+  - Random playouts: Wins 52% of games
+  
+Position C: Disadvantaged position
+  - Random playouts: Wins 23% of games
+
+Ranking: A > B > C (correct!)
+```
+
+**Mathematical intuition:**
+
+Good positions have more ways to win. Even random play will stumble into winning tactics more often from advantageous positions!
+
+**Central Limit Theorem application:**
+
+After $n$ simulations, the standard error of our estimate is:
+
+$$\sigma_{\hat{V}} = \frac{\sigma}{\sqrt{n}} \approx \frac{0.5}{\sqrt{n}}$$
+
+Where $\sigma \leq 0.5$ for binary rewards $\{0, 1\}$.
+
+**Example:** After 50 iterations (Medium difficulty):
+$$\sigma_{\hat{V}} \approx \frac{0.5}{\sqrt{50}} \approx 0.071$$
+
+Our win rate estimate has ~7% standard error. Usually sufficient for good decisions!
+
+**Simulation policy improvements:**
+
+While pure random works, we can enhance simulations:
+
+1. **Favor captures:** $P(\text{capture move}) = 2 \times P(\text{normal move})$
+2. **Avoid edge moves:** $P(\text{edge}) = 0.5 \times P(\text{center})$
+3. **Domain knowledge:** Encode simple heuristics in rollout policy
+
+Our implementation uses **pure random** for simplicity, but these enhancements can improve convergence rate.
+
+
 
 ---
 
 ### Pillar 4: BACKPROPAGATION - Share What You Learned
 
-**What it does:** Updates all the moves that led to this position with the simulation result.
+**Objective:** Update all nodes on the path from root to the simulated node with the outcome.
 
-**The update:**
+**Backpropagation algorithm:**
+
 ```
-For each move from root to the new position:
-   - Increase visit count by 1
-   - Add the reward (0.0, 0.5, or 1.0)
+function BACKPROPAGATE(node, reward):
+    while node is not null:
+        node.visits++
+        node.total_reward += reward
+        node = node.parent
 ```
 
-**Why update all ancestors?** Because the simulation result tells us about **every decision** that led there.
+**The update equations:**
+
+For each node $v$ on the path from root to leaf:
+
+$$N(v) \leftarrow N(v) + 1$$
+$$Q(v) \leftarrow Q(v) + R$$
+
+Where $R \in \{0.0, 0.5, 1.0\}$ is the simulation reward.
+
+**Why update all ancestors?**
+
+Because the simulation result provides information about **every decision** that led to that position!
+
+**Statistical interpretation:**
+
+After $n$ simulations passing through node $v$:
+
+$$\text{Win rate}(v) = \frac{Q(v)}{N(v)} = \frac{1}{N(v)} \sum_{i=1}^{N(v)} R_i$$
+
+This is the **sample mean** of rewards, which converges to the true expected value:
+
+$$\lim_{N(v) \to \infty} \frac{Q(v)}{N(v)} = E[R | v]$$
+
+**Perspective switching:**
+
+Important: Rewards are from the perspective of the **player to move** at each node!
+
+When backpropagating through opponent nodes, we need to **invert** the reward:
+
+$$R_{\text{opponent}} = 1 - R_{\text{us}}$$
 
 **Example:**
+- AI wins simulation: $R = 1.0$ for AI nodes
+- Same simulation: $R = 0.0$ for opponent nodes (they lost!)
+
+**Concrete backpropagation trace:**
+
 ```
-Game path: Root → Move A → Response X → Move B → New position
-Simulation: AI wins! (1.0 reward)
+Simulation result: AI wins (R = 1.0)
+
+Path: Root → Move A → Opp X → Move B → New Node
 
 Updates:
-Root:       visits 49→50,  total wins 25→26  (52% win rate)
-Move A:     visits 24→25,  total wins 15→16  (64% win rate)
-Response X: visits 11→12,  total wins  8→9   (75% win rate)
-Move B:     visits  6→7,   total wins  5→6   (86% win rate)
-New position: visits 0→1,  total wins  0→1   (100% win rate)
+┌──────────────┬──────────┬────────────┬─────────────┬──────────┐
+│ Node         │ Before   │ Reward     │ After       │ Win Rate │
+├──────────────┼──────────┼────────────┼─────────────┼──────────┤
+│ New Node     │ (0, 0)   │ +1.0       │ (1, 1)      │ 100.0%   │
+│ Move B (AI)  │ (6, 5)   │ +1.0       │ (7, 6)      │ 85.7%    │
+│ Opp X (Opp)  │ (11, 8)  │ +0.0 (inv) │ (12, 8)     │ 66.7%    │
+│ Move A (AI)  │ (24, 15) │ +1.0       │ (25, 16)    │ 64.0%    │
+│ Root         │ (49, 25) │ +1.0       │ (50, 26)    │ 52.0%    │
+└──────────────┴──────────┴────────────┴─────────────┴──────────┘
 
-Notice: Win rate increases as we go deeper = following the best path!
+Format: (N(v), Q(v))
 ```
 
-**In plain English:** Tell all the moves in this sequence "Hey, this path led to a win!" so they get tried more often next time.
+**Observations:**
+1. **Deeper nodes have higher win rates** - This path led to a win!
+2. **Opponent node has lower win rate** - From opponent's perspective, this path loses
+3. **Root has modest win rate** - Averaging over all paths (good and bad)
+
+**Confidence bounds:**
+
+Using the **Hoeffding bound**, we can compute confidence intervals:
+
+$$P\left(\left|\frac{Q(v)}{N(v)} - \mu(v)\right| \geq \epsilon\right) \leq 2e^{-2N(v)\epsilon^2}$$
+
+With 95% confidence ($\alpha = 0.05$), solving for $\epsilon$:
+
+$$\epsilon = \sqrt{\frac{\ln(2/\alpha)}{2N(v)}} = \sqrt{\frac{\ln 40}{2N(v)}} \approx \frac{1.36}{\sqrt{N(v)}}$$
+
+**Example confidence intervals:**
+
+| $N(v)$ | Win Rate Estimate | 95% Confidence Interval |
+|--------|-------------------|-------------------------|
+| 10 | 60% | $60\% \pm 43\%$ → [17%, 100%] |
+| 25 | 64% | $64\% \pm 27\%$ → [37%, 91%] |
+| 100 | 58% | $58\% \pm 14\%$ → [44%, 72%] |
+
+**Insight:** More visits → Tighter confidence → More reliable estimate!
 
 ---
+
+### Putting It All Together: The Complete MCTS Iteration
+
+**After $N$ iterations (e.g., 50 for Medium difficulty):**
+
+```
+Root State (50 visits, 26 wins → 52% win rate)
+│
+├─ Move A (25 visits, 16 wins → 64%) ← Highest visit count
+│  ├─ Opponent X (12 visits, 8 losses → 67% for opponent)
+│  │  ├─ Response A1 (6 visits, 5 wins → 83%)  
+│  │  │  └─ [depth 4+] (several branches)
+│  │  └─ Response A2 (4 visits, 2 wins → 50%)
+│  └─ Opponent Y (8 visits, 6 losses → 75% for opponent)
+│     ├─ Response A3 (3 visits, 2 wins → 67%)
+│     └─ Response A4 (2 visits, 1 win → 50%)
+│
+├─ Move B (15 visits, 6 wins → 40%)
+│  ├─ Opponent Z (8 visits, 4 losses → 50% for opponent)
+│  └─ [other branches...]
+│
+├─ Move C (8 visits, 3 wins → 38%)
+│  └─ [lightly explored...]
+│
+└─ Move D (2 visits, 0 wins → 0%) ← Almost ignored
+
+**Decision: Choose Move A** (25 visits = most explored = most reliable)
+```
+
+**Key observations:**
+
+1. **Asymmetric growth:** Move A dominates with 50% of iterations (25/50)
+2. **Adaptive depth:** Move A explored to depth 4+, while Move D barely expanded
+3. **Visit count = reliability:** We trust Move A more than Move C despite similar win rates
+4. **Exploration still happens:** Even "bad" Move D got 2 visits to confirm it's bad
+
+**Why choose by visit count, not win rate?**
+
+Consider this scenario:
+- Move X: 100 visits, 55% win rate  
+- Move Y: 5 visits, 80% win rate
+
+Which is better? **Move X!** Because:
+
+$$\text{Confidence}(X) = \frac{1.36}{\sqrt{100}} = 13.6\%$$
+$$\text{Confidence}(Y) = \frac{1.36}{\sqrt{5}} = 60.8\%$$
+
+Move Y's 80% could be anywhere from 20% to 100%! Not reliable enough.
+
+**Mathematical guarantee:** As $N \to \infty$, MCTS converges to selecting the move with highest true value (by the Law of Large Numbers).
+
+---
+
+### Complexity Analysis
+
+**Time complexity per iteration:**
+
+1. **Selection:** $O(d \cdot b)$ where $d$ = tree depth, $b$ = branching factor
+   - Must compute UCT for $b$ children at each of $d$ levels
+   
+2. **Expansion:** $O(b)$ to identify unexpanded moves
+   
+3. **Simulation:** $O(m \cdot b)$ where $m$ = average simulation length
+   - Each move requires generating and choosing from $b$ legal moves
+   
+4. **Backpropagation:** $O(d)$ to update nodes on path
+
+**Total per iteration:** $O(m \cdot b + d \cdot b) = O((m + d) \cdot b)$
+
+**For $N$ iterations:** $O(N \cdot (m + d) \cdot b)$
+
+**Space complexity:** $O(N)$ because we store at most $N$ nodes (one per expansion)
+
+**Comparison with Minimax:**
+
+| Algorithm | Time | Space | Depth Reached |
+|-----------|------|-------|---------------|
+| **Minimax** | $O(b^d)$ | $O(d)$ | Fixed $d$ (usually 6-8) |
+| **Minimax + Alpha-Beta** | $O(b^{d/2})$ (best case) | $O(d)$ | Fixed $d$ |
+| **MCTS** | $O(N \cdot (m+d) \cdot b)$ | $O(N)$ | Variable (adaptive) |
+
+**Key advantage:** MCTS is **anytime** - you can stop after any number of iterations and get a reasonable answer. Minimax must complete to depth $d$.
+
+
 
 ### Putting It All Together
 
