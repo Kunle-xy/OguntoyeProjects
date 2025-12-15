@@ -4,28 +4,53 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * 
- * @author 
- *
- */
-/**
  * This class implements the Monte Carlo Tree Search method to find the best
  * move at the current state for a checkers game.
+ *
+ * @author Kunle Oguntoye
  */
 public class MonteCarloTreeSearch extends AdversarialSearch {
 
-    private final int SIMULATION_LIMIT = 50; // Limit for MCTS simulations
+    public enum Difficulty {
+        EASY(20, Math.sqrt(2)),      // Fast, less strategic
+        MEDIUM(50, Math.sqrt(5)),    // Balanced
+        HARD(150, 3.0);              // Stronger, more exploration
+
+        final int simulationLimit;
+        final double explorationConstant;
+
+        Difficulty(int simLimit, double exploreConst) {
+            this.simulationLimit = simLimit;
+            this.explorationConstant = exploreConst;
+        }
+    }
+
+    private int simulationLimit;
+    private double explorationConstant;
     private final Random random = new Random();
+
+    /**
+     * Constructor with default difficulty (MEDIUM).
+     */
+    public MonteCarloTreeSearch() {
+        this(Difficulty.MEDIUM);
+    }
+
+    /**
+     * Constructor with specified difficulty level.
+     */
+    public MonteCarloTreeSearch(Difficulty difficulty) {
+        this.simulationLimit = difficulty.simulationLimit;
+        this.explorationConstant = difficulty.explorationConstant;
+    }
 
     @Override
     public CheckersMove makeMove(CheckersMove[] legalMoves) {
-        System.out.println("Monte Carlo Tree Search initiated...");
-
         // Create the root node with the current board state
-        MCNode<CheckersMove> root = new MCNode<>(null, null, board);
+        MCNode<CheckersMove> root = new MCNode<>(null, null, board, explorationConstant);
 
         // Run simulations up to the specified limit
-        for (int i = 0; i < SIMULATION_LIMIT; i++) {
+        for (int i = 0; i < simulationLimit; i++) {
             MCNode<CheckersMove> selectedNode = selection(root);
             MCNode<CheckersMove> expandedNode = expansion(selectedNode);
             double simulationResult = simulation(expandedNode);
@@ -35,10 +60,8 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         // Select the best child node based on visit count (exploration)
         MCNode<CheckersMove> bestChild = root.getBestChildByVisits();
         if (bestChild == null || bestChild.getMove() == null) {
-            System.out.println("No valid AI move found.");
             return legalMoves[0]; // Fallback to the first legal move if no move is found
         } else {
-            System.out.println("AI selected best move for Black: " + bestChild.getMove());
             return bestChild.getMove();
         }
     }
@@ -50,7 +73,6 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         while (!node.isLeaf()) {
             node = node.getBestChildByUCT();
         }
-        System.out.println("Selection step complete.");
         return node;
     }
 
@@ -62,12 +84,10 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         if (!unexploredMoves.isEmpty()) {
             CheckersMove move = unexploredMoves.get(random.nextInt(unexploredMoves.size()));
             CheckersData newState = node.getStateAfterMove(move);
-            MCNode<CheckersMove> childNode = new MCNode<>(move, node, newState);
+            MCNode<CheckersMove> childNode = new MCNode<>(move, node, newState, explorationConstant);
             node.addChild(childNode);
-            System.out.println("Expanded with move: " + move);
             return childNode;
         }
-        System.out.println("No unexplored moves available for expansion.");
         return node; // If no moves to explore, return the current node
     }
 
@@ -113,8 +133,29 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         while (node != null) {
             node.incrementVisits(); // Increase the visit count for the node
             node.addReward(reward); // Update the reward with the simulation result
-            System.out.println("Backpropagation at node: " + node + " Reward: " + reward);
             node = node.getParent();
         }
+    }
+
+    /**
+     * Get the current simulation limit.
+     */
+    public int getSimulationLimit() {
+        return simulationLimit;
+    }
+
+    /**
+     * Get the current exploration constant.
+     */
+    public double getExplorationConstant() {
+        return explorationConstant;
+    }
+
+    /**
+     * Set the difficulty level.
+     */
+    public void setDifficulty(Difficulty difficulty) {
+        this.simulationLimit = difficulty.simulationLimit;
+        this.explorationConstant = difficulty.explorationConstant;
     }
 }

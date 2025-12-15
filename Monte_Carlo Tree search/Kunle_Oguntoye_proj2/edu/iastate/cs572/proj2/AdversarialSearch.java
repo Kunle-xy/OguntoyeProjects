@@ -1,13 +1,9 @@
 package edu.iastate.cs572.proj2;
 
 /**
- * 
- * @author
- *
- */
-
-/**
  * This class is to be extended by the class MonteCarloTreeSearch.
+ *
+ * @author Kunle Oguntoye
  */
 public abstract class AdversarialSearch {
     protected CheckersData board;
@@ -19,13 +15,12 @@ public abstract class AdversarialSearch {
         this.board = board;
     }
     
-    /** 
-     * 
+    /**
+     *
      * @return an array of valid moves
      */
     protected CheckersMove[] legalMoves() {
-    	// TODO
-    	return board.getLegalMoves(board.getCurrentPlayer()); 
+    	return board.getLegalMoves(board.getCurrentPlayer());
     }
 	
     /**

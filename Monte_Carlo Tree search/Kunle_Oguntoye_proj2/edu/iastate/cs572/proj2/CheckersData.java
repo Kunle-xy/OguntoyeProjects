@@ -69,12 +69,6 @@ public class CheckersData {
             }
         }
     }
-    //DEBUG
-    // public static void main(String[] args) {
-    //     CheckersData game = new CheckersData();
-    //     System.out.println("Initial Board Setup:");
-    //     System.out.println(game);
-    // }
 
     public void switchPlayer() {
         if (currentPlayer == RED) {
@@ -123,33 +117,12 @@ public class CheckersData {
                 int fromCol = move.cols.get(i);
                 int toRow = move.rows.get(i + 1);
                 int toCol = move.cols.get(i + 1);
-    
+
                 // Perform each jump
-                System.out.println("Performing jump from (" + fromRow + ", " + fromCol + ") to (" + toRow + ", " + toCol + ")");
                 makeMove(fromRow, fromCol, toRow, toCol);
-    
-                // Print intermediate board state
-                System.out.println("Board after jump " + (i + 1) + ":");
-                System.out.println(this);
             }
-            // Explicitly place the capturing piece at the final position
-            // Define the final row and column
-            int finalRow = move.rows.get(move.rows.size() - 1);
-            int finalCol = move.cols.get(move.cols.size() - 1);
-
-            // Place the capturing piece at the final position
-            int finalPiece = board[move.rows.get(0)][move.cols.get(0)];
-            board[finalRow][finalCol] = finalPiece;
-
-            // Clear the initial position
-            board[move.rows.get(0)][move.cols.get(0)] = EMPTY;
-
         }
-    
-        // Print the final board state after the entire move
-        System.out.println("Final board state after move:");
-        System.out.println(this);
-    
+
         // Switch the player
         switchPlayer();
     }
@@ -158,24 +131,21 @@ public class CheckersData {
         // Move the piece to the new location
         board[toRow][toCol] = board[fromRow][fromCol];
         board[fromRow][fromCol] = EMPTY;
-    
+
         // Handle capturing logic for jumps
         if (Math.abs(fromRow - toRow) == 2) {
             int midRow = (fromRow + toRow) / 2;
             int midCol = (fromCol + toCol) / 2;
-    
+
             // Remove the captured piece
-            System.out.println("Captured piece at (" + midRow + ", " + midCol + ")");
             board[midRow][midCol] = EMPTY; // Clear the captured square
         }
-    
+
         // Promote to king if the piece reaches the end row
         if (toRow == 0 && board[toRow][toCol] == RED) {
             board[toRow][toCol] = RED_KING;
-            System.out.println("Promoting RED piece to KING at (" + toRow + ", " + toCol + ")");
         } else if (toRow == 7 && board[toRow][toCol] == BLACK) {
             board[toRow][toCol] = BLACK_KING;
-            System.out.println("Promoting BLACK piece to KING at (" + toRow + ", " + toCol + ")");
         }
     }
     
@@ -185,11 +155,7 @@ public class CheckersData {
     public CheckersMove[] getLegalMoves(int player) {
         ArrayList<CheckersMove> capturingMoves = new ArrayList<>();
         ArrayList<CheckersMove> regularMoves = new ArrayList<>();
-    
-        System.out.println("Generating legal moves for player: " + (player == RED ? "RED" : "BLACK"));
-        System.out.println("Current board state:");
-        System.out.println(this);
-        
+
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 int piece = board[row][col];
@@ -218,16 +184,14 @@ public class CheckersData {
                 }
             }
         }
-    
+
+
         // Return capturing moves if any, else return regular moves
         if (!capturingMoves.isEmpty()) {
-            System.out.println("Returning capturing moves for player: " + (player == RED ? "RED" : "BLACK"));
             return capturingMoves.toArray(new CheckersMove[0]);
         } else if (!regularMoves.isEmpty()) {
-            System.out.println("Returning regular moves for player: " + (player == RED ? "RED" : "BLACK"));
             return regularMoves.toArray(new CheckersMove[0]);
         } else {
-            System.out.println("No legal moves found for player: " + (player == RED ? "RED" : "BLACK"));
             return null;
         }
     }
@@ -275,8 +239,14 @@ public class CheckersData {
                     // Add the move to the current path
                     ArrayList<Integer> newRows = new ArrayList<>(currentRows);
                     ArrayList<Integer> newCols = new ArrayList<>(currentCols);
-                    newRows.add(row);
-                    newCols.add(col);
+
+                    // Only add starting position if this is the first jump in the sequence
+                    if (newRows.isEmpty()) {
+                        newRows.add(row);
+                        newCols.add(col);
+                    }
+
+                    // Always add the jump destination
                     newRows.add(jumpRow);
                     newCols.add(jumpCol);
     
@@ -307,15 +277,12 @@ public class CheckersData {
 
     private boolean isValidJump(int player, int fromRow, int fromCol, int toRow, int toCol) {
         if (!inBounds(toRow, toCol) || board[toRow][toCol] != EMPTY) return false;
-        
+
         int midRow = (fromRow + toRow) / 2;
         int midCol = (fromCol + toCol) / 2;
         int opponent = (player == RED) ? BLACK : RED;
 
-        boolean isValid = board[midRow][midCol] == opponent || board[midRow][midCol] == opponent + 1;
-        System.out.println("Checking jump from (" + fromRow + "," + fromCol + ") to (" + toRow + "," + toCol + "): " + (isValid ? "Valid" : "Invalid"));
-        
-        return isValid;
+        return board[midRow][midCol] == opponent || board[midRow][midCol] == opponent + 1;
     }
 
     private boolean inBounds(int row, int col) {
@@ -335,6 +302,7 @@ public class CheckersData {
         for (int i = 0; i < board.length; i++) {
             newState.board[i] = board[i].clone();
         }
+        newState.currentPlayer = this.currentPlayer;
         return newState;
     }
 

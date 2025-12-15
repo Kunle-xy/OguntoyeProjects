@@ -13,11 +13,17 @@ public class MCNode<E> {
     private final CheckersData state;
     private int visits = 0;
     private double reward = 0.0;
+    private final double explorationConstant;
 
     public MCNode(CheckersMove move, MCNode<E> parent, CheckersData state) {
+        this(move, parent, state, Math.sqrt(5)); // Default exploration constant
+    }
+
+    public MCNode(CheckersMove move, MCNode<E> parent, CheckersData state, double explorationConstant) {
         this.move = move;
         this.parent = parent;
         this.state = state;
+        this.explorationConstant = explorationConstant;
     }
 
     public void addChild(MCNode<E> child) {
@@ -38,23 +44,16 @@ public class MCNode<E> {
 
     public ArrayList<CheckersMove> getUnexploredMoves() {
         CheckersMove[] legalMoves = state.getLegalMoves(state.getCurrentPlayer());
-        
+
         if (legalMoves == null) {
-            // System.out.println("No legal moves found for current player: " + state.getCurrentPlayer());
-            // System.out.println("Board state:\n" + state.toString());
             return new ArrayList<>();
         }
-    
+
         ArrayList<CheckersMove> allMoves = new ArrayList<>(Arrays.asList(legalMoves));
         for (MCNode<E> child : children) {
             allMoves.remove(child.getMove());
         }
-    
-        System.out.println("Current player: " + state.getCurrentPlayer());
-        System.out.println("Legal moves: " + Arrays.toString(legalMoves));
-        System.out.println("Unexplored moves: " + allMoves);
-        System.out.println("Board state:\n" + state.toString());
-    
+
         return allMoves;
     }
     
@@ -68,10 +67,14 @@ public class MCNode<E> {
     public double getUCTValue() {
         if (visits == 0) return Double.MAX_VALUE; // High UCT for unexplored nodes
         if (parent == null) return Double.MAX_VALUE; // Avoid UCT calculation for root
-        
+
         double exploitation = reward / visits;
-        double exploration = Math.sqrt(5) * Math.sqrt(Math.log(parent.getVisits()) / visits);
+        double exploration = explorationConstant * Math.sqrt(Math.log(parent.getVisits()) / visits);
         return exploitation + exploration;
+    }
+
+    public double getExplorationConstant() {
+        return explorationConstant;
     }
     
 
@@ -113,7 +116,6 @@ public class MCNode<E> {
         while (currentNode != null) {
             currentNode.incrementVisits();
             currentNode.addReward(result);
-            // System.out.println("Backpropagation at node: " + currentNode + " with result: " + result);
             currentNode = currentNode.getParent();
         }
     }

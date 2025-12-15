@@ -7,9 +7,6 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
-//Scanner for the external input.
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.Random;
 
@@ -39,10 +36,7 @@ public class Checkers extends JPanel {
     static boolean chengeValue = false;
     
 	public static void main(String[] args) {
-		System.out.println("A Checker-Playing Agent Using the Monte Carlo Tree Search");
-		// 1: Use Monte Carlo tree search throughout the game. 
-		System.out.println("keys: 1 (MCTS)  2 (Other - not implemented yet)\n");
-        JFrame window = new JFrame("Checkers");
+        JFrame window = new JFrame("Checkers - MCTS AI");
         
         
         Checkers content = new Checkers();
@@ -63,6 +57,7 @@ public class Checkers extends JPanel {
 
     private JLabel message;  // Label for displaying messages to the user.
     private static JLabel premessage;
+    private JComboBox<String> difficultySelector;  // Dropdown for AI difficulty
     
     //Previous display
     static PreBoard previous = new PreBoard(); // Display previous board
@@ -92,6 +87,7 @@ public class Checkers extends JPanel {
         
         add(newGameButton);
         add(resignButton);
+        add(difficultySelector);
         add(message);
         add(premessage);
 
@@ -101,10 +97,11 @@ public class Checkers extends JPanel {
         //board.setBounds(20,20,164,164); // Note:  size MUST be 164-by-164 !
         previous.setBounds(20,20,164,164);
         board.setBounds(230,20,164,164);
-        
+
         //previous.setBounds(20,20,164,164);
         newGameButton.setBounds(400, 60, 120, 30);
         resignButton.setBounds(400, 120, 120, 30);
+        difficultySelector.setBounds(400, 20, 120, 30);
         message.setBounds(140, 200, 350, 30);
         premessage.setBounds(40, 200, 350, 30);
 
@@ -241,6 +238,12 @@ public class Checkers extends JPanel {
             resignButton.addActionListener(this);
             newGameButton = new JButton("New Game");
             newGameButton.addActionListener(this);
+
+            // Create difficulty selector
+            difficultySelector = new JComboBox<>(new String[]{"Easy", "Medium", "Hard"});
+            difficultySelector.setSelectedIndex(1); // Default to Medium
+            difficultySelector.addActionListener(this);
+
             message = new JLabel("",JLabel.CENTER);
             message.setFont(new  Font("Serif", Font.BOLD, 14));
             message.setForeground(Color.green);
@@ -256,27 +259,26 @@ public class Checkers extends JPanel {
 
         public void decideAIplayer()
         {
-        	Scanner stdin = new Scanner(System.in);
-    		boolean done = false;
-        	player = new MonteCarloTreeSearch();
-            while (!done) {
-                try {
-                	int aikey = stdin.nextInt();
-                    if (aikey==1) {done = true; aiKey = 1;}
-                    else if(aikey==2) // no second agent 
-                    { done =true; aiKey= 2;}
-                    else {
-                        System.out.println("\tThe entered number should be (1-2)");
-                    }
-                }
-                catch (InputMismatchException e) {
-                    System.out.println("\tInvalid input type (must be an integer)");
-                    stdin.nextLine();  // Clear invalid input from scanner buffer.
-                }
+            // Create AI player with selected difficulty
+            MonteCarloTreeSearch.Difficulty difficulty = getDifficultyFromSelector();
+            player = new MonteCarloTreeSearch(difficulty);
+            aiKey = 1; // Always use MCTS
+        }
+
+        private MonteCarloTreeSearch.Difficulty getDifficultyFromSelector() {
+            String selected = (String) difficultySelector.getSelectedItem();
+            switch (selected) {
+                case "Easy":
+                    return MonteCarloTreeSearch.Difficulty.EASY;
+                case "Hard":
+                    return MonteCarloTreeSearch.Difficulty.HARD;
+                case "Medium":
+                default:
+                    return MonteCarloTreeSearch.Difficulty.MEDIUM;
             }
         }
         /**
-         * Respond to user's click on one of the two buttons.
+         * Respond to user's click on one of the two buttons or difficulty selector.
          */
         public void actionPerformed(ActionEvent evt) {
             Object src = evt.getSource();
@@ -284,6 +286,14 @@ public class Checkers extends JPanel {
                 doNewGame();
             else if (src == resignButton)
                 doResign();
+            else if (src == difficultySelector) {
+                // Update AI difficulty when selector changes
+                MonteCarloTreeSearch.Difficulty difficulty = getDifficultyFromSelector();
+                if (player instanceof MonteCarloTreeSearch) {
+                    ((MonteCarloTreeSearch) player).setDifficulty(difficulty);
+                    message.setText("AI Difficulty set to: " + difficultySelector.getSelectedItem());
+                }
+            }
         }
 
 

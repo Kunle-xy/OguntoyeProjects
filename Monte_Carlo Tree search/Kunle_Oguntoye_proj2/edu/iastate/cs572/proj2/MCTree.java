@@ -1,15 +1,14 @@
-package edu.iastate.cs572.proj2; 
+package edu.iastate.cs572.proj2;
 
-/** 
- * This class requires no implementation.  You may use it to create a Monte Carlo search tree, or 
- * you may get the work done using the MCNode class. 
- * 
- * @author 
+/**
+ * Optional Monte Carlo search tree container.
+ * The MCNode class handles most tree operations independently.
  *
- * @param <E>
+ * @author Kunle Oguntoye
+ * @param <E> the type of elements stored in the tree
  */
-public class MCTree<E> 
+public class MCTree<E>
 {
-	MCNode root;
+	MCNode<E> root;
 	int size;
 }
