@@ -6,9 +6,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.Random;
+
 
 /**
  * This panel lets two users play checkers against each other.

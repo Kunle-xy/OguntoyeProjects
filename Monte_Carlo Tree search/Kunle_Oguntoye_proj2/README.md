@@ -7,11 +7,119 @@ An intelligent AI opponent for Checkers that learns winning strategies through s
 ---
 
 ## Table of Contents
-1. [What is Monte Carlo Tree Search?](#what-is-monte-carlo-tree-search)
-2. [Why Not Use Minimax?](#why-not-use-minimax)
-3. [The Four Pillars of MCTS](#the-four-pillars-of-mcts)
-4. [How to Run the Game](#how-to-run-the-game)
-5. [How to Play](#how-to-play)
+1. [What's New](#whats-new)
+2. [What is Monte Carlo Tree Search?](#what-is-monte-carlo-tree-search)
+3. [Why Not Use Minimax?](#why-not-use-minimax)
+4. [The Four Pillars of MCTS](#the-four-pillars-of-mcts)
+5. [How to Run the Game](#how-to-run-the-game)
+6. [How to Play](#how-to-play)
+
+---
+
+## What's New
+
+### 🎮 Latest Features (December 2024)
+
+#### Dynamic Difficulty System ⭐ NEW
+Challenge yourself with three AI difficulty levels, each using different MCTS parameters:
+
+- **Easy Mode**: 20 simulations, $c = \sqrt{2}$ (Beginner-friendly, ~0.5s thinking time)
+- **Medium Mode**: 50 simulations, $c = \sqrt{5}$ (Balanced challenge, ~1-2s)
+- **Hard Mode**: 150 simulations, $c = 3.0$ (Advanced opponent, ~3-5s)
+
+**Key Innovation**: Different exploration constants alter how the AI balances trying new moves versus sticking with proven strategies. Higher $c$ values make the AI more exploratory and less predictable!
+
+💡 **Try this**: Start on Easy to learn the game mechanics, then switch to Hard mid-game to see how the AI's playing style transforms.
+
+---
+
+#### Bug Fixes & Improvements
+
+**Fixed: Multi-Jump Move Bug** ✅
+- **Issue**: Pieces were disappearing after executing multi-jump sequences
+- **Root Cause**: Duplicate position entries in move arrays during jump exploration
+- **Solution**: Refined `exploreAllJumps()` to only add starting position once per sequence
+- **Impact**: Multi-jump captures now work flawlessly!
+
+**Fixed: State Copy Bug** ✅
+- **Issue**: MCTS simulations weren't preserving turn order
+- **Root Cause**: `copy()` method didn't copy `currentPlayer` field
+- **Solution**: Added `newState.currentPlayer = this.currentPlayer` to state cloning
+- **Impact**: AI simulations now accurately model game flow
+
+**Code Cleanup** 🧹
+- Removed all debug print statements for cleaner output
+- Eliminated unused imports and commented code
+- Professional, production-ready codebase
+
+---
+
+### 🔧 Known Issues & Limitations
+
+**Current Limitations:**
+- **No Opening Book**: First 3-4 moves are somewhat random (AI hasn't "memorized" good openings)
+- **Limited Simulation Depth**: Default 20-move simulation limit may miss very deep tactics
+- **Simple Evaluation**: Uses piece count difference; doesn't understand positional nuances
+- **No Persistent Learning**: AI doesn't remember games between sessions
+
+**Performance Notes:**
+- Hard mode may lag slightly on slower computers (~5-7s thinking time)
+- Very large branching factors in mid-game can slow down expansion phase
+
+**Planned Fixes:**
+- Implement progressive widening to handle high branching factors
+- Add iterative deepening for simulation phase
+- Consider RAVE (Rapid Action Value Estimation) for faster convergence
+
+---
+
+### Coming Soon 🚀
+
+**Roadmap for Future Versions:**
+
+**Version 2.1 (Planned - Q1 2025)**
+- **🎯 Move Hints System**: Click "Hint" button to see AI's recommended move
+- **📊 Statistics Dashboard**: Real-time display of:
+  - Win rate estimates for each legal move
+  - Nodes explored per second
+  - Tree depth statistics
+  - Simulation outcomes histogram
+
+**Version 3.0 (Planned - Q2 2025)**
+- **💾 Save/Load Games**: Persist game state to JSON files
+- **🤖 AI vs AI Mode**: Watch Easy vs Hard compete
+- **🎬 Replay Mode**: Step through saved games move-by-move
+- **📈 Performance Profiler**:
+  - Visualize MCTS tree as it grows
+  - See which branches get explored most
+  - Animated UCT value changes
+
+**Future Considerations:**
+- **🏆 Endgame Tablebase**: Perfect play when ≤6 pieces remain
+- **🧠 Neural Network Enhancement**: Use NN for simulation policy instead of random
+- **☁️ Cloud Integration**: Upload games, compare against global AI strength
+- **🎓 Learning Mode**: Interactive tutorials on checkers tactics
+
+Want to contribute? Check out the [Project Structure](#project-structure) section to get started!
+
+---
+
+### 📜 Version History
+
+#### Version 2.0 (December 2024) - Major Update
+- ✨ Added dynamic difficulty system (Easy/Medium/Hard)
+- ✨ Variable exploration constants per difficulty level
+- 🐛 Fixed critical multi-jump bug causing piece disappearance
+- 🐛 Fixed state copy bug affecting MCTS simulations
+- 🧹 Complete code cleanup and documentation overhaul
+- 📚 Comprehensive README with mathematical explanations
+
+#### Version 1.0 (Initial Release)
+- 🎮 Fully functional MCTS Checkers AI
+- 🌲 Complete implementation of 4-phase MCTS algorithm
+- 🎨 Java Swing GUI with previous board display
+- ♟️ Full checkers rules including forced jumps and king promotion
+- 📊 UCT-based node selection with configurable parameters
 
 ---
 
@@ -775,20 +883,46 @@ A window will appear with the checkers board!
 
 ### Step 3: Choose Difficulty
 
-Use the dropdown menu at the top to select difficulty:
+Use the dropdown menu at the top right of the window to select AI difficulty:
 
-| Difficulty | Iterations | Thinking Time | How Strong? |
-|-----------|-----------|---------------|-------------|
-| **Easy** | 20 | ~0.5 seconds | Beatable for beginners |
-| **Medium** | 50 | ~1-2 seconds | Good challenge |
-| **Hard** | 150 | ~3-5 seconds | Very difficult to beat |
+| Difficulty | Simulations | Exploration Constant ($c$) | Thinking Time | Play Style |
+|-----------|-------------|---------------------------|---------------|------------|
+| **Easy** | 20 | $\sqrt{2} \approx 1.414$ | ~0.5 seconds | Faster, more exploitative - Beatable for beginners |
+| **Medium** | 50 | $\sqrt{5} \approx 2.236$ | ~1-2 seconds | Balanced exploration/exploitation - Good challenge |
+| **Hard** | 150 | $3.0$ | ~3-5 seconds | Aggressive exploration - Very difficult to beat |
 
-**What do iterations mean?**
-- Easy (20 iterations): AI thinks through 20 simulation cycles
-- Medium (50 iterations): 50 cycles = smarter decisions  
-- Hard (150 iterations): 150 cycles = very strategic play
+**How difficulty affects AI behavior:**
 
-More iterations = deeper understanding = harder opponent!
+1. **Simulation Count:**
+   - More simulations = more statistical samples = better move evaluation
+   - Easy (20): Quick decisions, may miss subtle tactics
+   - Hard (150): Thorough analysis, finds complex winning sequences
+
+2. **Exploration Constant ($c$ in UCT formula):**
+
+   Recall the UCT formula:
+   $$\text{UCT}(v) = \frac{Q(v)}{N(v)} + c \sqrt{\frac{\ln N(\text{parent}(v))}{N(v)}}$$
+
+   - **Easy ($c = \sqrt{2}$):** Lower exploration bonus
+     - Focuses more on moves that have worked before (exploitation)
+     - Faster to converge on a "good enough" move
+     - May miss creative or unusual winning tactics
+
+   - **Medium ($c = \sqrt{5}$):** Balanced
+     - Standard balance between trying new moves and using proven ones
+     - Default recommended setting
+
+   - **Hard ($c = 3.0$):** Higher exploration bonus
+     - Tries more different move variations
+     - Less likely to miss hidden tactical opportunities
+     - Finds moves that require deeper foresight
+
+**Dynamic Difficulty:**
+- You can change difficulty **mid-game** using the dropdown
+- The AI immediately adapts to the new settings
+- Next move will use the new simulation count and exploration constant
+
+**Challenge yourself:** Start with Easy, then switch to Hard once you understand the game!
 
 ---
 
@@ -895,14 +1029,27 @@ When you launch the game, you'll see:
 
 **Can I make the AI even harder?**
 
-Yes! You can modify the code:
+Yes! You can add custom difficulty levels by modifying `MonteCarloTreeSearch.java`:
 
 ```java
-// In MonteCarloTreeSearch.java, add a new difficulty:
-EXPERT(500, 4.0);  // Very challenging!
+// In the Difficulty enum (around line 14), add:
+public enum Difficulty {
+    EASY(20, Math.sqrt(2)),
+    MEDIUM(50, Math.sqrt(5)),
+    HARD(150, 3.0),
+    EXPERT(500, 4.0);  // Super challenging! Takes 10-15 seconds per move
 
-// Trade-off: Takes 10-15 seconds per move
+    // ... rest of the code
+}
 ```
+
+Then add "Expert" to the difficulty selector in `Checkers.java`:
+
+```java
+difficultySelector = new JComboBox<>(new String[]{"Easy", "Medium", "Hard", "Expert"});
+```
+
+**Warning:** Expert difficulty will be very strong but slow!
 
 ---
 
