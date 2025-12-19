@@ -13,6 +13,7 @@ A Hidden Markov Model (HMM) trading strategy using multivariate observations (re
 5. [Trading Strategy and Data Splitting](#5-trading-strategy-and-data-splitting)
 6. [Quick Start Guide](#6-quick-start-guide)
 7. [Configuration Reference](#7-configuration-reference)
+8. [Results Visualization](#8-results-visualization)
 
 ---
 
@@ -687,6 +688,34 @@ python 5_visualize.py        # Generate visualizations
 | `results/backtest_results.csv` | Daily P&L and state predictions |
 | `results/backtest_plot.png` | Portfolio equity curve |
 | `results/state_stats.png` | Regime analysis visualization |
+
+---
+
+## 8. Results Visualization
+
+### 8.1 Backtest Performance Plot
+
+The following chart shows the HMM strategy's performance compared to a buy-and-hold benchmark during the test period:
+
+![Backtest Performance](results/backtest_plot.png)
+
+**Key Metrics Displayed:**
+- **Blue Line**: HMM Strategy portfolio value over time
+- **Orange Line**: Buy-and-hold benchmark (SPY)
+- **Shaded Regions**: Detected market regimes (BULL vs BEAR)
+- **Entry/Exit Points**: Trade markers showing when positions were opened/closed
+
+### 8.2 HMM State Analysis
+
+This visualization shows the statistical characteristics of the learned hidden states:
+
+![State Statistics](results/state_stats.png)
+
+**What This Shows:**
+- **State Distribution**: How often the model detected each regime
+- **Return Distributions**: Histogram of returns in BULL vs BEAR states
+- **Transition Probabilities**: How likely the market stays in or switches regimes
+- **State Means & Covariances**: Learned Gaussian parameters for each regime
 
 ---
 
