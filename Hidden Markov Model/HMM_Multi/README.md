@@ -252,19 +252,47 @@ Where $P_t^{adj}$ is the adjusted closing price at time $t$.
 
 ## 3. Wavelet Transform for Feature Extraction
 
-### 3.1 Why Wavelets?
+### 3.1 Motivation: From Univariate to Multivariate HMM
 
-Standard HMMs using only returns suffer from:
-1. **Noise Sensitivity**: Daily returns are noisy; small fluctuations trigger false regime changes
-2. **Scale Blindness**: Returns don't capture multi-scale market dynamics
-3. **Lag**: Moving averages introduce lag
+#### Prior Work: Returns-Only HMM
+
+The foundational approach to HMM-based regime detection in finance uses **univariate observations**—typically daily returns alone. A notable implementation is the [QuantStart Market Regime Detection](https://www.quantstart.com/articles/market-regime-detection-using-hidden-markov-models-in-qstrader/) tutorial, which demonstrates using a Gaussian HMM with returns as the sole observation feature. In this approach:
+
+- **Observation**: $o_t = r_t$ (single return value)
+- **Emission**: $b_i(r_t) = \mathcal{N}(r_t; \mu_i, \sigma_i^2)$ (univariate Gaussian)
+- **States**: Detected based on differences in return mean and variance
+
+While effective for basic regime classification, the univariate approach has limitations:
+1. **Information Loss**: Returns alone don't capture frequency-domain patterns
+2. **Noise Sensitivity**: Single-feature models are more susceptible to outliers
+3. **Limited Discriminability**: States may overlap significantly in return space
+
+#### Our Extension: Multivariate HMM with Wavelet Features
+
+This project extends the returns-only framework by experimenting with **multivariate Gaussian HMM** observations. The key innovation is augmenting returns with **wavelet energy** as a second feature:
+
+$$\mathbf{o}_t = \begin{bmatrix} r_t \\ E_t \end{bmatrix} \quad \text{instead of} \quad o_t = r_t$$
+
+**Why Multivariate?**
+
+| Aspect | Univariate (Returns Only) | Multivariate (Returns + Wavelet) |
+|--------|---------------------------|----------------------------------|
+| **Observation Dimension** | $d = 1$ | $d = 2$ |
+| **Emission Model** | $\mathcal{N}(\mu, \sigma^2)$ | $\mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ |
+| **Feature Correlation** | N/A | Captures return-energy relationship |
+| **State Separation** | 1D line | 2D plane (better discrimination) |
+| **Robustness** | Lower | Higher (multiple evidence sources) |
+
+The multivariate formulation allows the HMM to learn **covariance structure** between returns and wavelet energy, potentially identifying regimes where:
+- BULL: Positive returns with low energy (calm uptrend)
+- BEAR: Negative returns with high energy (volatile decline)
 
 **Wavelet transforms** address these issues by providing:
 - **Time-Frequency Localization**: Capture both when and at what frequency patterns occur
 - **Multi-Resolution Analysis**: Decompose signal into different time scales
 - **Energy Concentration**: Identify periods of high market activity
 
-### 3.2 Continuous Wavelet Transform (CWT)
+### 3.3 Continuous Wavelet Transform (CWT)
 
 The **Continuous Wavelet Transform** of a signal $x(t)$ is defined as:
 
@@ -277,7 +305,7 @@ Where:
 - $b$ is the **translation parameter** (time localization)
 - $\frac{1}{\sqrt{a}}$ is a normalization factor
 
-### 3.3 Complex Morlet Wavelet
+### 3.4 Complex Morlet Wavelet
 
 We use the **Complex Morlet wavelet**, defined as:
 
@@ -295,7 +323,7 @@ Where:
 | **Gaussian envelope** | Optimal time-frequency localization (Heisenberg uncertainty) |
 | **Oscillatory** | Good frequency resolution for financial cycles |
 
-### 3.4 Wavelet Energy Calculation
+### 3.5 Wavelet Energy Calculation
 
 The **wavelet energy** at time $t$ quantifies the signal's activity at the chosen scale:
 
@@ -313,7 +341,7 @@ For each time t from window to T:
     4. Compute energy: E_t = |W_t|^2
 ```
 
-### 3.5 Key Wavelet Parameters
+### 3.6 Key Wavelet Parameters
 
 | Parameter | Symbol | Config Variable | Default | Interpretation |
 |-----------|--------|-----------------|---------|----------------|
@@ -327,7 +355,7 @@ $$f \approx \frac{f_c}{a \cdot \Delta t}$$
 
 Where $\Delta t$ is the sampling period (1 day). Higher scales capture lower-frequency (longer-term) patterns.
 
-### 3.6 Multivariate Observation Vector
+### 3.7 Multivariate Observation Vector
 
 Our HMM uses a **2-dimensional observation vector**:
 
